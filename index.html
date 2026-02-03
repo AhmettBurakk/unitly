@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unitly - Smart Precision Converter</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
+            --result-bg: #eff6ff;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --border: #334155;
+            --result-bg: #0f172a;
+        }
+
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: background 0.3s ease; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 2px solid var(--border); padding-bottom: 20px; flex-wrap: wrap; gap: 20px; }
+        .logo { font-size: 2rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+        .logo span { color: var(--text); }
+        .theme-toggle { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 600; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .card { background: var(--card); padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
+        
+        h3 { margin-top: 0; color: var(--primary); font-size: 1.15rem; margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 12px; }
+        .input-group { display: flex; flex-direction: column; gap: 12px; }
+        .row { display: flex; gap: 10px; align-items: center; }
+        
+        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--card); color: var(--text); outline: none; box-sizing: border-box; }
+        button { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+
+        .result-box { background: var(--result-bg); padding: 15px; border-radius: 10px; margin-top: 20px; text-align: center; border: 1px dashed var(--primary); }
+        .result-val { font-size: 1.5rem; font-weight: 800; color: var(--primary); display: block; margin-top: 5px; }
+        
+        .disclaimer { margin-top: 60px; padding: 20px; background: rgba(0,0,0,0.05); border-radius: 10px; font-size: 0.8rem; line-height: 1.5; color: #64748b; text-align: center; }
+        .footer { text-align: center; margin-top: 30px; color: #94a3b8; font-size: 0.85rem; padding-bottom: 40px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <div class="logo">Unit<span>ly</span></div>
+            <p style="margin:5px 0 0; opacity:0.7;">The Smart Choice for Engineering & Finance</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Mode</button>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <h3>📏 Length</h3>
+            <div class="input-group">
+                <input type="number" id="lenInput" placeholder="Value" oninput="convertLen()">
+                <div class="row">
+                    <select id="lenFrom" onchange="convertLen()">
+                        <option value="1000">mm</option>
+                        <option value="100">cm</option>
+                        <option value="10">dm</option>
+                        <option value="1" selected>m</option>
+                        <option value="0.1">dam</option>
+                        <option value="0.01">hm</option>
+                        <option value="0.001">km</option>
+                        <option value="39.3701">inch</option>
+                    </select>
+                    <span>➔</span>
+                    <select id="lenTo" onchange="convertLen()">
+                        <option value="1000">mm</option>
+                        <option value="100" selected>cm</option>
+                        <option value="1">m</option>
+                        <option value="0.001">km</option>
+                    </select>
+                </div>
+            </div>
+            <div class="result-box">Result: <span class="result-val" id="lenRes">0</span></div>
+        </div>
+
+        <div class="card">
+            <h3>⚡ Speed</h3>
+            <div class="input-group">
+                <input type="number" id="spdInput" placeholder="Speed" oninput="convertSpd()">
+                <div class="row">
+                    <select id="spdFrom" onchange="convertSpd()">
+                        <option value="3.6" selected>km/h</option>
+                        <option value="1">m/s</option>
+                        <option value="2.23694">mph</option>
+                        <option value="1.94384">Knots</option>
+                    </select>
+                    <span>➔</span>
+                    <select id="spdTo" onchange="convertSpd()">
+                        <option value="3.6">km/h</option>
+                        <option value="1" selected>m/s</option>
+                        <option value="2.23694">mph</option>
+                    </select>
+                </div>
+            </div>
+            <div class="result-box">Result: <span class="result-val" id="spdRes">0</span></div>
+        </div>
+
+        <div class="card">
+            <h3>🌡️ Temp</h3>
+            <div class="input-group">
+                <input type="number" id="tempInput" placeholder="Value" oninput="convertTemp()">
+                <div class="row">
+                    <select id="tempFrom" onchange="convertTemp()">
+                        <option value="C" selected>Celsius</option>
+                        <option value="F">Fahrenheit</option>
+                        <option value="K">Kelvin</option>
+                    </select>
+                    <span>➔</span>
+                    <select id="tempTo" onchange="convertTemp()">
+                        <option value="C">Celsius</option>
+                        <option value="F" selected>Fahrenheit</option>
+                    </select>
+                </div>
+            </div>
+            <div class="result-box">Result: <span class="result-val" id="tempRes">0</span></div>
+        </div>
+
+        <div class="card">
+            <h3>🏎️ Power</h3>
+            <div class="input-group">
+                <input type="number" id="pwrInput" placeholder="Value" oninput="convertPwr()">
+                <div class="row">
+                    <select id="pwrFrom" onchange="convertPwr()">
+                        <option value="1.341">HP</option>
+                        <option value="1" selected>kW</option>
+                    </select>
+                    <span>➔</span>
+                    <select id="pwrTo" onchange="convertPwr()">
+                        <option value="1.341" selected>HP</option>
+                        <option value="1">kW</option>
+                    </select>
+                </div>
+            </div>
+            <div class="result-box">Result: <span class="result-val" id="pwrRes">0</span></div>
+        </div>
+
+        <div class="card">
+            <h3>💨 Pressure</h3>
+            <div class="input-group">
+                <input type="number" id="prsInput" placeholder="Value" oninput="convertPrs()">
+                <div class="row">
+                    <select id="prsFrom" onchange="convertPrs()">
+                        <option value="1" selected>Bar</option>
+                        <option value="14.5038">PSI</option>
+                        <option value="100000">Pa</option>
+                    </select>
+                    <span>➔</span>
+                    <select id="prsTo" onchange="convertPrs()">
+                        <option value="1">Bar</option>
+                        <option value="14.5038" selected>PSI</option>
+                        <option value="100000">Pa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="result-box">Result: <span class="result-val" id="prsRes">0</span></div>
+        </div>
+
+        <div class="card">
+            <h3>📈 Interest</h3>
+            <div class="input-group">
+                <input type="number" id="anaPara" placeholder="Principal">
+                <input type="number" id="faizOran" placeholder="Annual Rate %">
+                <input type="number" id="vade" placeholder="Months">
+                <button onclick="calcInterest()">Calculate</button>
+            </div>
+            <div class="result-box">Return: <span class="result-val" id="faizGetiri">0.00</span></div>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        <strong>Disclaimer:</strong> This tool is provided for informational purposes only. While we strive for accuracy, calculations may contain errors. We are not responsible for any financial or engineering decisions made based on these results.
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 Unitly | Precision Built Solutions</p>
+    </div>
+</div>
+
+<script>
+    function toggleTheme() {
+        const body = document.body;
+        body.getAttribute('data-theme') === 'dark' ? body.removeAttribute('data-theme') : body.setAttribute('data-theme', 'dark');
+    }
+
+    function genericConvert(val, from, to) {
+        if (!val || val == 0) return 0;
+        let res = (val / from) * to;
+        return res < 0.0001 ? res.toFixed(6) : res.toLocaleString('en-US', {maximumFractionDigits: 4});
+    }
+
+    function convertSpd() {
+        let v = document.getElementById('spdInput').value;
+        let f = document.getElementById('spdFrom').value;
+        let t = document.getElementById('spdTo').value;
+        document.getElementById('spdRes').innerText = genericConvert(v, f, t);
+    }
+
+    function convertLen() {
+        let v = document.getElementById('lenInput').value;
+        let f = document.getElementById('lenFrom').value;
+        let t = document.getElementById('lenTo').value;
+        document.getElementById('lenRes').innerText = genericConvert(v, f, t);
+    }
+
+    function convertPwr() {
+        let v = document.getElementById('pwrInput').value;
+        let f = document.getElementById('pwrFrom').value;
+        let t = document.getElementById('pwrTo').value;
+        document.getElementById('pwrRes').innerText = genericConvert(v, f, t);
+    }
+
+    function convertPrs() {
+        let v = document.getElementById('prsInput').value;
+        let f = document.getElementById('prsFrom').value;
+        let t = document.getElementById('prsTo').value;
+        document.getElementById('prsRes').innerText = genericConvert(v, f, t);
+    }
+
+    function convertTemp() {
+        let val = parseFloat(document.getElementById('tempInput').value);
+        let from = document.getElementById('tempFrom').value;
+        let to = document.getElementById('tempTo').value;
+        if (isNaN(val)) return;
+
+        let celsius;
+        if (from === "C") celsius = val;
+        else if (from === "F") celsius = (val - 32) * 5/9;
+        else if (from === "K") celsius = val - 273.15;
+
+        let res;
+        if (to === "C") res = celsius;
+        else if (to === "F") res = (celsius * 9/5) + 32;
+        else if (to === "K") res = celsius + 273.15;
+
+        document.getElementById('tempRes').innerText = res.toFixed(2);
+    }
+
+    function calcInterest() {
+        let p = parseFloat(document.getElementById('anaPara').value) || 0;
+        let r = parseFloat(document.getElementById('faizOran').value) || 0;
+        let t = parseFloat(document.getElementById('vade').value) || 0;
+        let earn = (p * r * t) / 1200;
+        document.getElementById('faizGetiri').innerText = earn.toLocaleString('en-US', {minimumFractionDigits: 2});
+    }
+</script>
+
+</body>
+</html>
