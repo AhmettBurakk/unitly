@@ -3,50 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Unitly Lab: A professional engineering suite featuring 2D Sketch Analysis, EV Performance Simulators, and high-precision unit converters.">
-    <meta name="keywords" content="wheel torque calculator, 2d sketch analysis, engineering converter, ev range simulator, mechanical engineering tools, unitly lab">
+    <meta name="description" content="Unitly Lab: High-precision engineering suite with 10+ conversion modules, EV simulators, and 2D design tools.">
+    <meta name="keywords" content="unitly lab, torque converter, engineering tools, go-kart simulator, mechanical unit converter">
     <meta name="author" content="Unitly Lab Team">
     <title>Unitly Lab - Ultimate Engineering Suite</title>
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --border: #e2e8f0; --result-bg: #eff6ff; --accent: #10b981; }
         [data-theme="dark"] { --primary: #3b82f6; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155; --result-bg: #0f172a; }
-        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: background 0.3s ease; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: 0.3s; }
         .container { max-width: 1400px; margin: 0 auto; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 2px solid var(--border); padding-bottom: 20px; flex-wrap: wrap; gap: 20px; }
         .logo { font-size: 2rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
-        .logo span { color: var(--text); }
         .header-actions { display: flex; gap: 15px; align-items: center; }
         .dropdown { position: relative; display: inline-block; }
-        .dropbtn { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: 700; font-size: 0.95rem; transition: 0.2s; }
-        .dropdown-content { display: none; position: absolute; right: 0; background-color: var(--card); min-width: 260px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-radius: 12px; z-index: 1000; border: 1px solid var(--border); margin-top: 10px; overflow: hidden; }
-        .dropdown-content a { color: var(--text); padding: 12px 20px; text-decoration: none; display: block; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+        .dropbtn { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: 700; transition: 0.2s; }
+        .dropdown-content { display: none; position: absolute; right: 0; background-color: var(--card); min-width: 260px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); border-radius: 12px; z-index: 1000; border: 1px solid var(--border); margin-top: 10px; overflow: hidden; }
+        .dropdown-content a { color: var(--text); padding: 12px 20px; text-decoration: none; display: block; font-weight: 600; cursor: pointer; }
         .dropdown-content a:hover { background-color: var(--result-bg); color: var(--primary); }
         .show { display: block; }
         .theme-toggle { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 600; }
-        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-        .card { background: var(--card); padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
-        h3 { margin-top: 0; color: var(--primary); font-size: 1.15rem; margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 12px; }
-        .special-h3 { color: var(--accent); border-left-color: var(--accent); }
+        .card { background: var(--card); padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
+        h3 { margin-top: 0; color: var(--primary); font-size: 1.1rem; margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 12px; }
         .input-group { display: flex; flex-direction: column; gap: 12px; }
         .row { display: flex; gap: 10px; align-items: center; }
         input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--card); color: var(--text); outline: none; box-sizing: border-box; }
         button { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        .result-box { background: var(--result-bg); padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; border: 1px dashed var(--primary); }
-        .result-val { font-size: 1.5rem; font-weight: 800; color: var(--primary); display: block; }
+        .result-box { background: var(--result-bg); padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; border: 1px dashed var(--primary); min-height: 24px; }
+        .result-val { font-size: 1.2rem; font-weight: 800; color: var(--primary); display: block; line-height: 1.5; }
         .label-small { font-size: 0.75rem; font-weight: bold; margin-bottom: -8px; opacity: 0.7; }
-
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); overflow-y: auto; }
         .modal-content { background: var(--card); margin: 5% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; border: 1px solid var(--border); position: relative; }
-        .modal-sketch { width: 98%; height: 95%; max-width: 1400px; display: flex; flex-direction: column; padding: 0; margin: 1% auto; }
+        .modal-sketch { max-width: 800px; }
         .close { float: right; cursor: pointer; font-size: 24px; font-weight: bold; }
-        .formula-text { font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--text); background: var(--bg); padding: 8px; border-radius: 6px; margin-top: 10px; opacity: 0.8; }
-        .sketch-toolbar { padding: 10px 25px; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        .canvas-container { flex-grow: 1; background: #1e293b; background-image: radial-gradient(#334155 1px, transparent 1px); background-size: 20px 20px; position: relative; cursor: crosshair; }
+        .sketch-toolbar { padding: 10px 25px; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; border-radius: 10px 10px 0 0; }
+        .canvas-container { height: 400px; background: #1e293b; position: relative; cursor: crosshair; border-radius: 0 0 10px 10px; overflow: hidden; }
         #designCanvas { width: 100%; height: 100%; }
-        .info-section { max-width: 1400px; margin: 40px auto 20px; padding: 30px; background: var(--card); border-radius: 16px; border: 1px solid var(--border); line-height: 1.6; }
-        .info-title { color: var(--primary); font-weight: 800; font-size: 1.5rem; margin-bottom: 15px; }
-        .disclaimer-text { font-size: 0.85rem; opacity: 0.7; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; font-style: italic; }
+        .info-section { max-width: 1400px; margin: 40px auto 20px; padding: 30px; background: var(--card); border-radius: 16px; border: 1px solid var(--border); line-height: 1.6; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .info-box h4 { color: var(--accent); margin-top: 0; }
+        .disclaimer { font-size: 0.8rem; opacity: 0.7; color: #ef4444; margin-top: 10px; }
         .footer { text-align: center; margin-top: 50px; color: #94a3b8; font-size: 0.85rem; padding-bottom: 30px; }
     </style>
 </head>
@@ -64,169 +59,215 @@
                 <div id="myDropdown" class="dropdown-content">
                     <a onclick="openModal('sketchModal')">🎨 Design Lab (2D Analysis)</a>
                     <a onclick="openModal('geomModal')">📐 Geometric Lab (Volume)</a>
-                    <a onclick="openModal('ebikeModal')">🚲 E-Bike & Go-Kart Lab</a>
+                    <a onclick="openModal('ebikeModal')">🚲 Mobility Lab (EV)</a>
                 </div>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
         </div>
     </header>
 
-    <div id="geomModal" class="modal">
+    <div class="grid">
+        <div class="card"><h3>📏 Length</h3><div class="input-group"><input type="number" id="lenInput" oninput="convert('len')"><div class="row"><select id="lenFrom" onchange="convert('len')"><option value="1">m</option><option value="1000">km</option><option value="0.01">cm</option><option value="0.001">mm</option><option value="1609.34">mi</option><option value="0.0254">in</option><option value="0.3048">ft</option></select>➔<select id="lenTo" onchange="convert('len')"><option value="0.01">cm</option><option value="1">m</option><option value="0.001">mm</option><option value="0.0254">in</option></select></div></div><div class="result-box"><span id="lenRes" class="result-val">0</span></div></div>
+        <div class="card"><h3>🟦 Area</h3><div class="input-group"><input type="number" id="areaInput" oninput="convert('area')"><div class="row"><select id="areaFrom" onchange="convert('area')"><option value="1">m²</option><option value="0.0001">cm²</option><option value="0.000001">mm²</option><option value="0.00064516">in²</option><option value="0.092903">ft²</option></select>➔<select id="areaTo" onchange="convert('area')"><option value="0.0001">cm²</option><option value="1">m²</option><option value="0.000001">mm²</option></select></div></div><div class="result-box"><span id="areaRes" class="result-val">0</span></div></div>
+        <div class="card"><h3>⏱️ Time</h3><div class="input-group"><input type="number" id="timInput" oninput="convert('tim')"><div class="row"><select id="timFrom" onchange="convert('tim')"><option value="3600">hour</option><option value="60">min</option><option value="1">sec</option><option value="86400">day</option></select>➔<select id="timTo" onchange="convert('tim')"><option value="1">sec</option><option value="60">min</option><option value="3600">hour</option></select></div></div><div class="result-box"><span id="timRes" class="result-val">0</span></div></div>
+        <div class="card"><h3>⚡ Speed</h3><div class="input-group"><input type="number" id="spdInput" oninput="convert('spd')"><div class="row"><select id="spdFrom" onchange="convert('spd')"><option value="0.2777">km/h</option><option value="1">m/s</option><option value="0.44704">mph</option></select>➔<select id="spdTo" onchange="convert('spd')"><option value="1">m/s</option><option value="0.2777">km/h</option></select></div></div><div class="result-box"><span id="spdRes" class="result-val">0</span></div></div>
+        <div class="card"><h3>⚙️ Torque</h3><div class="input-group"><input type="number" id="trqInput" oninput="convert('trq')"><div class="row"><select id="trqFrom" onchange="convert('trq')"><option value="1">Nm</option><option value="1.355">lb-ft</option><option value="0.113">lb-in</option></select>➔<select id="trqTo" onchange="convert('trq')"><option value="1.355">lb-ft</option><option value="1">Nm</option></select></div></div><div class="result-box"><span id="trqRes" class="result-val">0</span></div></div>
+        <div class="card"><h3>💪 Force</h3><div class="input-group"><input type="number" id="frcInput" oninput="convert('frc')"><div class="row"><select id="frcFrom" onchange="convert('frc')"><option value="1">N</option><option value="4.448">lbf</option><option value="9.806">kgf</option></select>➔<select id="frcTo" onchange="convert('frc')"><option value="4.448">lbf</option><option value="1">N</option></select></div></div><div class="result-box"><span id="frcRes" class="result-val">0</span></div></div>
+        <div class="card"><h3>🏎️ Power</h3><div class="input-group"><input type="number" id="pwrInput" oninput="convert('pwr')"><div class="row"><select id="pwrFrom" onchange="convert('pwr')"><option value="1">kW</option><option value="0.735">HP (Metric)</option><option value="0.7457">HP (Mech)</option></select>➔<select id="pwrTo" onchange="convert('pwr')"><option value="0.735">HP (Metric)</option><option value="1">kW</option></select></div></div><div class="result-box"><span id="pwrRes" class="result-val">0</span></div></div>
+        <div class="card"><h3>⚖️ Weight</h3><div class="input-group"><input type="number" id="wgtInput" oninput="convert('wgt')"><div class="row"><select id="wgtFrom" onchange="convert('wgt')"><option value="1">kg</option><option value="0.4535">lb</option><option value="0.001">g</option><option value="1000">ton</option><option value="0.02834">oz</option></select>➔<select id="wgtTo" onchange="convert('wgt')"><option value="0.4535">lb</option><option value="1">kg</option><option value="0.001">g</option><option value="0.02834">oz</option></select></div></div><div class="result-box"><span id="wgtRes" class="result-val">0</span></div></div>
+        <div class="card"><h3>🥛 Volume</h3><div class="input-group"><input type="number" id="volInput" oninput="convert('vol')"><div class="row"><select id="volFrom" onchange="convert('vol')"><option value="1">L</option><option value="1000">m³</option><option value="0.001">ml</option><option value="3.785">gal (US)</option></select>➔<select id="volTo" onchange="convert('vol')"><option value="1000">m³</option><option value="1">L</option><option value="0.001">ml</option></select></div></div><div class="result-box"><span id="volRes" class="result-val">0</span></div></div>
+        <div class="card"><h3>📈 Finance</h3><div class="input-group"><span class="label-small">Principal</span><input type="number" id="pCap" placeholder="10000"><span class="label-small">Rate %</span><input type="number" id="pRate" value="45"><span class="label-small">Months</span><input type="number" id="pTime" value="12"><button onclick="calcFin()">Calculate</button></div><div class="result-box">Return: <span id="finRes" class="result-val">0.00</span></div></div>
+    </div>
+
+    <div id="ebikeModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('geomModal')">&times;</span>
-            <h3 class="special-h3">📐 Geometric Lab (Quick Volume)</h3>
+            <span class="close" onclick="closeModal('ebikeModal')">&times;</span>
+            <h3 style="color:var(--accent); border-left-color:var(--accent);">🚲 Mobility Lab (EV)</h3>
             <div class="input-group">
-                <label class="label-small">Select Shape</label>
-                <select id="shapeType" onchange="updateGeomInputs()">
-                    <option value="cylinder">Cylinder (Silindir)</option>
-                    <option value="cone">Cone (Koni)</option>
-                    <option value="sphere">Sphere (Küre)</option>
-                    <option value="prizma">Rectangular Prizma</option>
-                </select>
-                <div id="geomInputs" class="input-group"></div>
-                <button onclick="calcGeomVolume()" style="background:var(--accent)">Calculate Volume</button>
+                <div class="row">
+                    <div style="flex:1"><span class="label-small">Voltage (V)</span><input type="number" id="evV" value="72"></div>
+                    <div style="flex:1"><span class="label-small">Battery (Ah)</span><input type="number" id="evAh" value="40"></div>
+                </div>
+                <div class="row">
+                    <div style="flex:1"><span class="label-small">Motor (W)</span><input type="number" id="evW" value="3000"></div>
+                    <div style="flex:1"><span class="label-small">Mass (kg)</span><input type="number" id="evM" value="150"></div>
+                </div>
+                <div class="row">
+                    <div style="flex:1"><span class="label-small">Torque (Nm)</span><input type="number" id="evTrq" value="15"></div>
+                    <div style="flex:1"><span class="label-small">Gear Ratio</span><input type="number" id="evRatio" value="5"></div>
+                </div>
+                <button onclick="calcMobility()" style="background:var(--accent)">Analyze Performance</button>
             </div>
-            <div id="geomFormula" class="formula-text">Formula: V = π × r² × h</div>
-            <div class="result-box" style="border-color:var(--accent)">Result: <span class="result-val" id="geomRes" style="color:var(--accent)">0 mm³</span></div>
+            <div class="result-box" style="border-color:var(--accent); display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>Wheel Torque:<span id="resWheelTrq" class="result-val" style="color:var(--accent)">0 Nm</span></div>
+                <div>0-50 km/h:<span id="resAccel50" class="result-val" style="color:var(--accent)">0s</span></div>
+                <div>0-100 km/h:<span id="resAccel100" class="result-val" style="color:var(--accent)">0s</span></div>
+                <div>Range:<span id="resRange" class="result-val" style="color:var(--accent)">0 km</span></div>
+            </div>
         </div>
     </div>
 
     <div id="sketchModal" class="modal">
         <div class="modal-content modal-sketch">
             <div style="padding:15px 25px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; border:0;">🎨 Design Lab (2D Sketcher)</h3>
-                <div id="analysisResult" style="font-weight:700; color:var(--accent);">Result: -</div>
+                <h3>🎨 Design Lab</h3>
+                <div id="analysisResult" style="font-weight:700; color:var(--accent);">-</div>
                 <span class="close" onclick="closeModal('sketchModal')">&times;</span>
             </div>
             <div class="sketch-toolbar">
-                <button onclick="setSketchTool('area')" style="width:auto; background:var(--primary);">Area</button>
+                <button onclick="setSketchTool('area')" style="width:auto;">Area</button>
                 <button onclick="setSketchTool('volume')" style="width:auto; background:var(--accent);">Volume</button>
                 <input type="number" id="depthInput" value="10" style="width:80px;">
                 <button onclick="clearCanvas()" style="width:auto; background:#ef4444;">Clear</button>
                 <span id="coords" style="font-size:0.75rem; opacity:0.6;">X: 0, Y: 0</span>
             </div>
-            <div class="canvas-container" id="canvasParent"><canvas id="designCanvas"></canvas></div>
+            <div class="canvas-container" id="canvasParent">
+                <canvas id="designCanvas"></canvas>
+            </div>
         </div>
     </div>
 
-    <div id="ebikeModal" class="modal">
+    <div id="geomModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('ebikeModal')">&times;</span>
-            <h3 style="color:var(--accent); border-left-color:var(--accent);">🚲 Mobility Performance Lab</h3>
-            <div class="input-group">
-                <div class="row">
-                    <div style="flex:1"><span class="label-small">Voltage (V)</span><input type="number" id="ebikeV" value="72"></div>
-                    <div style="flex:1"><span class="label-small">Capacity (Ah)</span><input type="number" id="ebikeAh" value="40"></div>
-                </div>
-                <div class="row">
-                    <div style="flex:1"><span class="label-small">Motor (W)</span><input type="number" id="ebikeW" value="3000"></div>
-                    <div style="flex:1"><span class="label-small">Mass (kg)</span><input type="number" id="ebikeMass" value="150"></div>
-                </div>
-                <div class="row">
-                    <div style="flex:1"><span class="label-small">Torque (Nm)</span><input type="number" id="ebikeTrq" value="10"></div>
-                    <div style="flex:1"><span class="label-small">Gear Ratio</span><input type="number" id="ebikeRatio" value="5"></div>
-                </div>
-                <button onclick="calcMobility()" style="background:var(--accent)">Analyze Performance</button>
-            </div>
-            <div class="result-box" style="border-color:var(--accent); display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div>Wheel Torque:<span class="result-val" id="resWheelTrq" style="color:var(--accent)">0 Nm</span></div>
-                <div>0-50 km/h:<span class="result-val" id="resAccel" style="color:var(--accent)">0s</span></div>
-                <div>Range:<span class="result-val" id="resRange" style="color:var(--accent)">0 km</span></div>
-                <div>Charge:<span class="result-val" id="resCharge" style="color:var(--accent)">0 h</span></div>
+            <span class="close" onclick="closeModal('geomModal')">&times;</span>
+            <h3 style="color:var(--accent); border-left-color:var(--accent);">📐 Geometric Lab</h3>
+            <select id="shapeType" onchange="updateGeomInputs()">
+                <option value="cylinder">Cylinder</option>
+                <option value="sphere">Sphere</option>
+                <option value="prism">Prism (Rectangular)</option>
+            </select>
+            <div id="geomInputs" class="input-group" style="margin-top:15px;"></div>
+            <button onclick="calcGeomVolume()" style="background:var(--accent)">Calculate Volume</button>
+            <div class="result-box" style="border-color:var(--accent)">
+                <span id="geomRes" class="result-val" style="color:var(--accent); font-size:1rem; text-align:center;">Enter parameters...</span>
             </div>
         </div>
     </div>
 
-    <div class="grid">
-        <div class="card"><h3>📏 Length</h3><div class="input-group"><input type="number" id="lenInput" oninput="convertLen()"><div class="row"><select id="lenFrom" onchange="convertLen()"><option value="1">m</option></select>➔<select id="lenTo" onchange="convertLen()"><option value="100">cm</option></select></div></div><div class="result-box"><span id="lenRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>🟦 Area</h3><div class="input-group"><input type="number" id="areaInput" oninput="convertArea()"><div class="row"><select id="areaFrom" onchange="convertArea()"><option value="1">m²</option></select>➔<select id="areaTo" onchange="convertArea()"><option value="10000">cm²</option></select></div></div><div class="result-box"><span id="areaRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>⏱️ Time</h3><div class="input-group"><input type="number" id="timInput" oninput="convertTim()"><div class="row"><select id="timFrom" onchange="convertTim()"><option value="1">hour</option></select>➔<select id="timTo" onchange="convertTim()"><option value="3600">sec</option></select></div></div><div class="result-box"><span id="timRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>⚡ Speed (m/s)</h3><div class="input-group"><input type="number" id="spdInput" oninput="convertSpd()"><div class="row"><select id="spdFrom" onchange="convertSpd()"><option value="3.6">km/h</option></select>➔<select id="spdTo" onchange="convertSpd()"><option value="1">m/s</option></select></div></div><div class="result-box"><span id="spdRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>⚙️ Torque</h3><div class="input-group"><input type="number" id="trqInput" oninput="convertTrq()"><div class="row"><select id="trqFrom" onchange="convertTrq()"><option value="1">Nm</option></select>➔<select id="trqTo" onchange="convertTrq()"><option value="0.73756">lb-ft</option></select></div></div><div class="result-box"><span id="trqRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>💪 Force</h3><div class="input-group"><input type="number" id="frcInput" oninput="convertFrc()"><div class="row"><select id="frcFrom" onchange="convertFrc()"><option value="1">N</option></select>➔<select id="frcTo" onchange="convertFrc()"><option value="0.2248">lbf</option></select></div></div><div class="result-box"><span id="frcRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>🏎️ Power</h3><div class="input-group"><input type="number" id="pwrInput" oninput="convertPwr()"><div class="row"><select id="pwrFrom" onchange="convertPwr()"><option value="1">kW</option></select>➔<select id="pwrTo" onchange="convertPwr()"><option value="1.341">HP</option></select></div></div><div class="result-box"><span id="pwrRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>⚖️ Weight</h3><div class="input-group"><input type="number" id="wgtInput" oninput="convertWgt()"><div class="row"><select id="wgtFrom" onchange="convertWgt()"><option value="1">kg</option></select>➔<select id="wgtTo" onchange="convertWgt()"><option value="2.204">lb</option></select></div></div><div class="result-box"><span id="wgtRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>🥛 Volume</h3><div class="input-group"><input type="number" id="volInput" oninput="convertVol()"><div class="row"><select id="volFrom" onchange="convertVol()"><option value="1">L</option></select>➔<select id="volTo" onchange="convertVol()"><option value="0.001">m³</option></select></div></div><div class="result-box"><span id="volRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>📈 Finance</h3><div class="input-group"><span class="label-small">Principal (Amount)</span><input type="number" id="pCap" placeholder="10000"><span class="label-small">Annual Interest %</span><input type="number" id="pRate" value="45"><span class="label-small">Months</span><input type="number" id="pTime" value="12"><button onclick="calcFin()">Calculate</button></div><div class="result-box">Return: <span id="finRes" class="result-val">0.00</span></div></div>
-    </div>
-
-    <div class="info-section" style="margin-top: 20px; border-color: var(--accent);">
-    <div class="info-title" style="color: var(--accent);">📧 Contact & Support</div>
-    <p>
-        Have a question about the <strong>Advanced Mobility Lab</strong> or need custom 2D analysis? 
-        We are here to help engineers and makers bring their projects to life.
-    </p>
-    <div style="display: flex; gap: 10px; margin-top: 15px;">
-        <a href="mailto:unitlylab@gmail.com" style="text-decoration:none; background: var(--accent); color: white; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; transition: 0.3s; display: inline-block;">
-            Send an Email
-        </a>
-    </div>
-</div>
-        <div class="info-title">🚀 About Unitly Lab</div>
-        <p>Unitly Lab is a high-precision engineering portal designed to simplify complex technical calculations. Built with a focus on <strong>simplicity and speed</strong>, our suite bridges the gap between theoretical mechanical engineering and practical DIY applications. From calculating <strong>wheel torque</strong> for electric vehicles to analyzing <strong>2D sketch geometry</strong>, we provide a clean, distraction-free environment for engineers, students, and hobbyists worldwide.</p>
-        <div class="disclaimer-text">
-            <strong>Disclaimer:</strong> The calculations and tools provided by Unitly Lab are for educational and informational purposes only. While we strive for 100% precision, results should be verified for critical engineering applications. The creator of Unitly Lab assumes no liability for any errors or damages resulting from the use of this software. Always double-check your safety factors.
+    <div class="info-section">
+        <div class="info-box">
+            <h4>📖 About Unitly Lab</h4>
+            <p>Unitly Lab is designed to perform essential engineering conversions and basic physical simulations. With its <strong>clean and minimal interface</strong>, it aims to provide quick solutions for students and engineers.</p>
+        </div>
+        <div class="info-box">
+            <h4>⚠️ Important Notice</h4>
+            <p>While we strive for high precision, this site <strong>may make mistakes</strong>. Results are not guaranteed to be 100% accurate. Cross-verify critical calculations with official standards.</p>
+            <div class="disclaimer">Calculations provided "as is" without any warranties.</div>
+            <p style="margin-top:15px;">Contact: <a href="mailto:unitlylab@gmail.com" style="color:var(--accent); font-weight:bold;">unitlylab@gmail.com</a></p>
         </div>
     </div>
+
     <div class="footer"><p>&copy; 2026 Unitly Lab | Global Engineering Standards</p></div>
 </div>
 
 <script>
-    function toggleTheme() { const b = document.body; b.getAttribute('data-theme')==='dark' ? b.removeAttribute('data-theme') : b.setAttribute('data-theme', 'dark'); }
+    // NAVIGATION
+    function toggleTheme() { document.body.hasAttribute('data-theme') ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'dark'); }
     function toggleDropdown() { document.getElementById("myDropdown").classList.toggle("show"); }
-    function openModal(id) { document.getElementById(id).style.display = "block"; if(id === 'sketchModal') initCanvas(); if(id === 'geomModal') updateGeomInputs(); }
+    function openModal(id) { document.getElementById(id).style.display = "block"; if(id === 'sketchModal') setTimeout(initCanvas, 150); if(id === 'geomModal') updateGeomInputs(); }
     function closeModal(id) { document.getElementById(id).style.display = "none"; }
-    window.onclick = function(e) { if (!e.target.matches('.dropbtn')) { var d = document.getElementsByClassName("dropdown-content"); for (var i = 0; i < d.length; i++) d[i].classList.remove('show'); } if (e.target.className === 'modal') e.target.style.display = "none"; }
+    window.onclick = function(e) { if (!e.target.matches('.dropbtn')) { var d = document.getElementsByClassName("dropdown-content"); for (var i = 0; i < d.length; i++) d[i].classList.remove('show'); } }
 
+    // CONVERTER
+    function convert(type) {
+        const val = parseFloat(document.getElementById(type + 'Input').value) || 0;
+        const from = parseFloat(document.getElementById(type + 'From').value);
+        const to = parseFloat(document.getElementById(type + 'To').value);
+        document.getElementById(type + 'Res').innerText = (val === 0) ? "0" : ((val * from) / to).toLocaleString('en-US', {maximumFractionDigits: 6});
+    }
+
+    // FINANCE
+    function calcFin() { 
+        let p = parseFloat(document.getElementById('pCap').value)||0, r = parseFloat(document.getElementById('pRate').value)||0, t = parseFloat(document.getElementById('pTime').value)||0; 
+        document.getElementById('finRes').innerText = ((p*r*t)/1200).toLocaleString('en-US', {minimumFractionDigits: 2}); 
+    }
+
+    // MOBILITY
+    function calcMobility() {
+        const v = parseFloat(document.getElementById('evV').value), ah = parseFloat(document.getElementById('evAh').value);
+        const w = parseFloat(document.getElementById('evW').value), m = parseFloat(document.getElementById('evM').value);
+        const t_motor = parseFloat(document.getElementById('evTrq').value), ratio = parseFloat(document.getElementById('evRatio').value);
+        document.getElementById('resWheelTrq').innerText = (t_motor * ratio * 0.9).toFixed(1) + " Nm";
+        document.getElementById('resAccel50').innerText = (((0.5 * m * 192.6) / (w * 0.9)) * 1.3).toFixed(1) + " s";
+        document.getElementById('resAccel100').innerText = (((0.5 * m * 771.6) / (w * 0.9)) * 1.3).toFixed(1) + " s";
+        document.getElementById('resRange').innerText = ((v * ah * 0.85) / 22).toFixed(0) + " km";
+    }
+
+    // DESIGN LAB (CANVAS REPAIRED)
+    let cv, ct, dr = false, pts = [], mode = 'area';
+    function setSketchTool(m) { mode = m; pts = []; }
+    function initCanvas() {
+        cv = document.getElementById('designCanvas'); ct = cv.getContext('2d'); 
+        const p = document.getElementById('canvasParent');
+        cv.width = p.offsetWidth; cv.height = p.offsetHeight;
+        
+        cv.onmousedown = (e) => { 
+            dr = true; 
+            pts.push({x: e.offsetX, y: e.offsetY}); 
+            this.sn = ct.getImageData(0,0,cv.width,cv.height); 
+        };
+        cv.onmousemove = (e) => { 
+            document.getElementById('coords').innerText = `X: ${e.offsetX}, Y: ${e.offsetY}`; 
+            if(!dr) return; 
+            ct.putImageData(this.sn, 0, 0); 
+            ct.beginPath(); 
+            ct.moveTo(pts[pts.length-1].x, pts[pts.length-1].y); 
+            ct.lineTo(e.offsetX, e.offsetY); 
+            ct.strokeStyle = '#3b82f6'; 
+            ct.lineWidth = 2;
+            ct.stroke(); 
+        };
+        cv.onmouseup = (e) => { 
+            dr = false; 
+            if(pts.length > 2 && Math.hypot(e.offsetX - pts[0].x, e.offsetY - pts[0].y) < 20) {
+                calculateShape();
+            } else {
+                pts.push({x: e.offsetX, y: e.offsetY});
+            }
+        };
+    }
+    function calculateShape() { 
+        let a = 0; 
+        for(let i=0; i<pts.length; i++){ 
+            let j=(i+1)%pts.length; 
+            a += pts[i].x * pts[j].y; 
+            a -= pts[j].x * pts[i].x; 
+        } 
+        a = Math.abs(a)/2; 
+        const result = (mode === 'area') ? `Area: ${a.toFixed(0)} mm²` : `Vol: ${(a * document.getElementById('depthInput').value).toFixed(0)} mm³`;
+        document.getElementById('analysisResult').innerText = result;
+    }
+    function clearCanvas() { ct.clearRect(0,0,cv.width,cv.height); pts=[]; document.getElementById('analysisResult').innerText = "-"; }
+
+    // GEOMETRIC
     function updateGeomInputs() {
         const type = document.getElementById('shapeType').value;
         const container = document.getElementById('geomInputs');
-        const formula = document.getElementById('geomFormula');
-        container.innerHTML = '';
-        if(type === 'cylinder') { container.innerHTML = '<span class="label-small">Radius (r) mm</span><input type="number" id="gr1"><span class="label-small">Height (h) mm</span><input type="number" id="gh1">'; formula.innerText = "Formula: V = π × r² × h"; }
-        else if(type === 'cone') { container.innerHTML = '<span class="label-small">Radius (r) mm</span><input type="number" id="gr1"><span class="label-small">Height (h) mm</span><input type="number" id="gh1">'; formula.innerText = "Formula: V = (1/3) × π × r² × h"; }
-        else if(type === 'sphere') { container.innerHTML = '<span class="label-small">Radius (r) mm</span><input type="number" id="gr1">'; formula.innerText = "Formula: V = (4/3) × π × r³"; }
-        else if(type === 'prizma') { container.innerHTML = '<span class="label-small">Width (w) mm</span><input type="number" id="gw"><span class="label-small">Height (h) mm</span><input type="number" id="gh"><span class="label-small">Depth (d) mm</span><input type="number" id="gd">'; formula.innerText = "Formula: V = w × h × d"; }
+        if (type === 'prism') {
+            container.innerHTML = `<span class="label-small">Width (mm)</span><input type="number" id="gw" placeholder="0"><span class="label-small">Height (mm)</span><input type="number" id="gh" placeholder="0"><span class="label-small">Depth (mm)</span><input type="number" id="gd" placeholder="0">`;
+        } else if (type === 'sphere') {
+            container.innerHTML = `<span class="label-small">Radius (mm)</span><input type="number" id="gr1" placeholder="0">`;
+        } else { // cylinder
+            container.innerHTML = `<span class="label-small">Radius (mm)</span><input type="number" id="gr1" placeholder="0"><span class="label-small">Height (mm)</span><input type="number" id="gh1" placeholder="0">`;
+        }
     }
 
     function calcGeomVolume() {
         const type = document.getElementById('shapeType').value;
         let v = 0;
-        if(type === 'cylinder') { v = Math.PI * Math.pow(document.getElementById('gr1').value, 2) * document.getElementById('gh1').value; }
-        else if(type === 'cone') { v = (1/3) * Math.PI * Math.pow(document.getElementById('gr1').value, 2) * document.getElementById('gh1').value; }
-        else if(type === 'sphere') { v = (4/3) * Math.PI * Math.pow(document.getElementById('gr1').value, 3); }
-        else if(type === 'prizma') { v = document.getElementById('gw').value * document.getElementById('gh').value * document.getElementById('gd').value; }
-        document.getElementById('geomRes').innerText = v.toLocaleString('en-US', {maximumFractionDigits: 1}) + " mm³";
-    }
-
-    function genericConvert(v, f, t) { if (!v || v == 0) return 0; let res = (v / f) * t; return res.toLocaleString('en-US', {maximumFractionDigits: 3}); }
-    function convertLen() { document.getElementById('lenRes').innerText = genericConvert(document.getElementById('lenInput').value, 1, 100); }
-    function convertArea() { document.getElementById('areaRes').innerText = genericConvert(document.getElementById('areaInput').value, 1, 10000); }
-    function convertTim() { document.getElementById('timRes').innerText = genericConvert(document.getElementById('timInput').value, 1, 3600); }
-    function convertSpd() { document.getElementById('spdRes').innerText = genericConvert(document.getElementById('spdInput').value, 3.6, 1); }
-    function convertTrq() { document.getElementById('trqRes').innerText = genericConvert(document.getElementById('trqInput').value, 1, 0.73756); }
-    function convertFrc() { document.getElementById('frcRes').innerText = genericConvert(document.getElementById('frcInput').value, 1, 0.2248); }
-    function convertPwr() { document.getElementById('pwrRes').innerText = genericConvert(document.getElementById('pwrInput').value, 1, 1.341); }
-    function convertWgt() { document.getElementById('wgtRes').innerText = genericConvert(document.getElementById('wgtInput').value, 1, 2.204); }
-    function convertVol() { document.getElementById('volRes').innerText = genericConvert(document.getElementById('volInput').value, 1, 0.001); }
-    function calcFin() { let p = parseFloat(document.getElementById('pCap').value)||0, r = parseFloat(document.getElementById('pRate').value)||0, t = parseFloat(document.getElementById('pTime').value)||0; document.getElementById('finRes').innerText = ((p*r*t)/1200).toLocaleString('en-US', {minimumFractionDigits: 2}); }
-    
-    function calcMobility() {
-        let v = parseFloat(document.getElementById('ebikeV').value)||0, ah = parseFloat(document.getElementById('ebikeAh').value)||0, w = parseFloat(document.getElementById('ebikeW').value)||0, m = parseFloat(document.getElementById('ebikeMass').value)||0;
-        let t = parseFloat(document.getElementById('ebikeTrq').value)||0, r = parseFloat(document.getElementById('ebikeRatio').value)||1;
-        if(v > 0 && ah > 0) {
-            document.getElementById('resWheelTrq').innerText = (t * r * 0.9).toFixed(1) + " Nm";
-            document.getElementById('resAccel').innerText = (((0.5 * m * Math.pow(13.8, 2)) / (w * 0.9)) * 1.3).toFixed(1) + " s";
-            document.getElementById('resRange').innerText = ((v * ah * 0.9) / 25).toFixed(0) + " km";
-            document.getElementById('resCharge').innerText = (ah / 5).toFixed(1) + " h";
+        if (type === 'cylinder') {
+            const r = parseFloat(document.getElementById('gr1').value) || 0, h = parseFloat(document.getElementById('gh1').value) || 0;
+            v = Math.PI * Math.pow(r, 2) * h;
+        } else if (type === 'sphere') {
+            const r = parseFloat(document.getElementById('gr1').value) || 0;
+            v = (4/3) * Math.PI * Math.pow(r, 3);
+        } else if (type === 'prism') {
+            const w = parseFloat(document.getElementById('gw').value) || 0, h = parseFloat(document.getElementById('gh').value) || 0, d = parseFloat(document.getElementById('gd').value) || 0;
+            v = w * h * d;
         }
+        const vCm3 = v / 1000, vM3 = v / 1000000000;
+        document.getElementById('geomRes').innerHTML = `<div>${v.toLocaleString('en-US', {maximumFractionDigits: 2})} mm³</div><div>${vCm3.toLocaleString('en-US', {maximumFractionDigits: 5})} cm³</div><div style="color:var(--primary); font-size:1.1rem; border-top:1px solid var(--border); padding-top:8px; margin-top:8px;"><strong>${vM3.toLocaleString('en-US', {maximumFractionDigits: 12})} m³</strong></div>`;
     }
-
-    let cv, ct, dr = false, sx, sy, pts = [];
-    function initCanvas() { cv = document.getElementById('designCanvas'); ct = cv.getContext('2d'); const p = document.getElementById('canvasParent'); cv.width = p.offsetWidth; cv.height = p.offsetHeight; cv.onmousedown = (e) => { dr = true; sx = e.offsetX; sy = e.offsetY; pts.push({x: sx, y: sy}); this.sn = ct.getImageData(0,0,cv.width,cv.height); }; cv.onmousemove = (e) => { document.getElementById('coords').innerText = `X: ${e.offsetX}, Y: ${e.offsetY}`; if(!dr) return; ct.putImageData(this.sn, 0, 0); ct.beginPath(); ct.moveTo(sx, sy); ct.lineTo(e.offsetX, e.offsetY); ct.strokeStyle = '#3b82f6'; ct.stroke(); }; cv.onmouseup = (e) => { dr = false; let dist = Math.sqrt(Math.pow(e.offsetX-pts[0].x,2)+Math.pow(e.offsetY-pts[0].y,2)); if(pts.length>2 && dist<20) calcArea(); }; }
-    function calcArea() { let a = 0; for(let i=0; i<pts.length; i++){ let j=(i+1)%pts.length; a+=pts[i].x*pts[j].y; a-=pts[j].x*pts[i].y; } a = Math.abs(a)/2; document.getElementById('analysisResult').innerText = `Area: ${a.toFixed(0)} mm²`; }
-    function clearCanvas() { ct.clearRect(0,0,cv.width,cv.height); pts=[]; document.getElementById('analysisResult').innerText = "-"; }
 </script>
 </body>
 </html>
-
