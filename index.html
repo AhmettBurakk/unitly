@@ -51,55 +51,27 @@
         </div>
 
         <div class="card">
-            <h3>⚖️ Weight (Ağırlık)</h3>
+            <h3>🏎️ Power (Güç)</h3>
             <div class="input-group">
-                <input type="number" id="wgtInput" placeholder="Value" oninput="convertWgt()">
+                <input type="number" id="pwrInput" placeholder="Value" oninput="convertPwr()">
                 <div class="row">
-                    <select id="wgtFrom" onchange="convertWgt()"><option value="1000">gram (g)</option><option value="1" selected>kg</option><option value="0.001">ton</option><option value="2.20462">lb (pound)</option><option value="35.274">oz</option></select>
+                    <select id="pwrFrom" onchange="convertPwr()"><option value="1" selected>kW</option><option value="1.341">HP</option></select>
                     <span>➔</span>
-                    <select id="wgtTo" onchange="convertWgt()"><option value="1000">gram (g)</option><option value="1">kg</option><option value="0.001">ton</option><option value="2.20462" selected>lb (pound)</option></select>
+                    <select id="pwrTo" onchange="convertPwr()"><option value="1">kW</option><option value="1.341" selected>HP</option></select>
                 </div>
             </div>
-            <div class="result-box">Result: <span class="result-val" id="wgtRes">0</span></div>
+            <div class="result-box">Result: <span class="result-val" id="pwrRes">0</span></div>
         </div>
 
         <div class="card">
-            <h3>🏢 Area (Alan)</h3>
+            <h3>📈 Finance</h3>
             <div class="input-group">
-                <input type="number" id="araInput" placeholder="Value" oninput="convertAra()">
-                <div class="row">
-                    <select id="araFrom" onchange="convertAra()"><option value="10000">cm²</option><option value="1" selected>m²</option><option value="0.0001">ha</option><option value="0.001">dönüm</option><option value="10.7639">ft²</option></select>
-                    <span>➔</span>
-                    <select id="araTo" onchange="convertAra()"><option value="10000">cm²</option><option value="1">m²</option><option value="0.0001" selected>ha</option><option value="10.7639">ft²</option></select>
-                </div>
+                <input type="number" id="anaPara" placeholder="Principal">
+                <input type="number" id="faizOran" placeholder="Annual Rate %">
+                <input type="number" id="vade" placeholder="Months">
+                <button onclick="calcInterest()">Calculate</button>
             </div>
-            <div class="result-box">Result: <span class="result-val" id="araRes">0</span></div>
-        </div>
-
-        <div class="card">
-            <h3>🥛 Volume (Hacim)</h3>
-            <div class="input-group">
-                <input type="number" id="volInput" placeholder="Value" oninput="convertVol()">
-                <div class="row">
-                    <select id="volFrom" onchange="convertVol()"><option value="1000">mL</option><option value="1" selected>Litre (L)</option><option value="0.001">m³</option><option value="0.264172">Gallon</option></select>
-                    <span>➔</span>
-                    <select id="volTo" onchange="convertVol()"><option value="1000">mL</option><option value="1">Litre (L)</option><option value="0.001" selected>m³</option><option value="0.264172">Gallon</option></select>
-                </div>
-            </div>
-            <div class="result-box">Result: <span class="result-val" id="volRes">0</span></div>
-        </div>
-
-        <div class="card">
-            <h3>💪 Force (Kuvvet)</h3>
-            <div class="input-group">
-                <input type="number" id="frcInput" placeholder="Value" oninput="convertFrc()">
-                <div class="row">
-                    <select id="frcFrom" onchange="convertFrc()"><option value="1" selected>Newton (N)</option><option value="0.10197">kgf</option><option value="0.224809">lbf (lb-force)</option></select>
-                    <span>➔</span>
-                    <select id="frcTo" onchange="convertFrc()"><option value="1">Newton (N)</option><option value="0.10197" selected>kgf</option><option value="0.224809">lbf</option></select>
-                </div>
-            </div>
-            <div class="result-box">Result: <span class="result-val" id="frcRes">0</span></div>
+            <div class="result-box">Return: <span class="result-val" id="faizGetiri">0.00</span></div>
         </div>
 
         <div class="card">
@@ -116,6 +88,19 @@
         </div>
 
         <div class="card">
+            <h3>💪 Force (Kuvvet)</h3>
+            <div class="input-group">
+                <input type="number" id="frcInput" placeholder="Value" oninput="convertFrc()">
+                <div class="row">
+                    <select id="frcFrom" onchange="convertFrc()"><option value="1" selected>Newton (N)</option><option value="0.10197">kgf</option><option value="0.224809">lbf</option></select>
+                    <span>➔</span>
+                    <select id="frcTo" onchange="convertFrc()"><option value="1">Newton (N)</option><option value="0.10197" selected>kgf</option><option value="0.224809">lbf</option></select>
+                </div>
+            </div>
+            <div class="result-box">Result: <span class="result-val" id="frcRes">0</span></div>
+        </div>
+
+        <div class="card">
             <h3>📐 Angle (Açı)</h3>
             <div class="input-group">
                 <input type="number" id="angInput" placeholder="Value" oninput="convertAng()">
@@ -129,30 +114,29 @@
         </div>
 
         <div class="card">
-            <h3>💾 Digital Data</h3>
+            <h3>⚖️ Weight (Ağırlık)</h3>
             <div class="input-group">
-                <input type="number" id="digInput" placeholder="Value" oninput="convertDig()">
+                <input type="number" id="wgtInput" placeholder="Value" oninput="convertWgt()">
                 <div class="row">
-                    <select id="digFrom" onchange="convertDig()"><option value="1024">MB</option><option value="1" selected>GB</option><option value="0.000976563">TB</option></select>
+                    <select id="wgtFrom" onchange="convertWgt()"><option value="1" selected>kg</option><option value="2.20462">lb</option><option value="1000">gram</option></select>
                     <span>➔</span>
-                    <select id="digTo" onchange="convertDig()"><option value="1024" selected>MB</option><option value="1">GB</option><option value="0.000976563">TB</option></select>
+                    <select id="wgtTo" onchange="convertWgt()"><option value="1">kg</option><option value="2.20462" selected>lb</option><option value="1000">gram</option></select>
                 </div>
             </div>
-            <div class="result-box">Result: <span class="result-val" id="digRes">0</span></div>
+            <div class="result-box">Result: <span class="result-val" id="wgtRes">0</span></div>
         </div>
 
         <div class="card">
-            <h3>🏎️ Power / 📈 Finance</h3>
+            <h3>🥛 Volume (Hacim)</h3>
             <div class="input-group">
-                <input type="number" id="pwrInput" placeholder="Power (kW)" oninput="convertPwr()">
-                <p style="font-size: 0.8rem; margin:0;">Result: <span id="pwrRes">0</span> HP</p>
-                <hr style="width:100%; border:0; border-top:1px solid var(--border);">
-                <input type="number" id="anaPara" placeholder="Anapara">
-                <input type="number" id="faizOran" placeholder="Faiz %">
-                <input type="number" id="vade" placeholder="Vade (Ay)">
-                <button onclick="calcInterest()">Hesapla</button>
+                <input type="number" id="volInput" placeholder="Value" oninput="convertVol()">
+                <div class="row">
+                    <select id="volFrom" onchange="convertVol()"><option value="1" selected>Litre (L)</option><option value="0.001">m³</option><option value="0.264172">Gallon</option></select>
+                    <span>➔</span>
+                    <select id="volTo" onchange="convertVol()"><option value="1">Litre (L)</option><option value="0.001" selected>m³</option><option value="0.264172">Gallon</option></select>
+                </div>
             </div>
-            <div class="result-box">Getiri: <span class="result-val" id="faizGetiri">0.00</span></div>
+            <div class="result-box">Result: <span class="result-val" id="volRes">0</span></div>
         </div>
     </div>
 
@@ -169,12 +153,10 @@
     
     function convertLen() { document.getElementById('lenRes').innerText = genericConvert(document.getElementById('lenInput').value, document.getElementById('lenFrom').value, document.getElementById('lenTo').value); }
     function convertWgt() { document.getElementById('wgtRes').innerText = genericConvert(document.getElementById('wgtInput').value, document.getElementById('wgtFrom').value, document.getElementById('wgtTo').value); }
-    function convertAra() { document.getElementById('araRes').innerText = genericConvert(document.getElementById('araInput').value, document.getElementById('araFrom').value, document.getElementById('araTo').value); }
     function convertVol() { document.getElementById('volRes').innerText = genericConvert(document.getElementById('volInput').value, document.getElementById('volFrom').value, document.getElementById('volTo').value); }
     function convertFrc() { document.getElementById('frcRes').innerText = genericConvert(document.getElementById('frcInput').value, document.getElementById('frcFrom').value, document.getElementById('frcTo').value); }
     function convertTrq() { document.getElementById('trqRes').innerText = genericConvert(document.getElementById('trqInput').value, document.getElementById('trqFrom').value, document.getElementById('trqTo').value); }
-    function convertDig() { document.getElementById('digRes').innerText = genericConvert(document.getElementById('digInput').value, document.getElementById('digFrom').value, document.getElementById('digTo').value); }
-    function convertPwr() { document.getElementById('pwrRes').innerText = genericConvert(document.getElementById('pwrInput').value, 1, 1.341); }
+    function convertPwr() { document.getElementById('pwrRes').innerText = genericConvert(document.getElementById('pwrInput').value, document.getElementById('pwrFrom').value, document.getElementById('pwrTo').value); }
 
     function convertAng() {
         let v = parseFloat(document.getElementById('angInput').value) || 0;
