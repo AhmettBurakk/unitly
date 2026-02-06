@@ -18,6 +18,7 @@
             --warn: #f59e0b;
             --danger: #ef4444;
             --bg-dark: #0f172a;
+            --sidebar-bg: #020617;
             --card-bg: rgba(30, 41, 59, 0.85);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -35,65 +36,125 @@
                 linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 100% 100%, 40px 40px, 40px 40px;
             background-attachment: fixed;
-            margin: 0; padding: 20px;
+            margin: 0; padding: 0;
             color: var(--text-main);
             min-height: 100vh;
+            display: flex;
+        }
+
+        /* --- SIDEBAR STYLING (UPDATED) --- */
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0;
+            width: 280px; /* Biraz daha genişletildi */
+            height: 100vh;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 5000; /* En üstte durması için */
+            overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu çıksın */
+        }
+        
+        /* Scrollbar styling for sidebar */
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: #020617; }
+        .sidebar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+
+        .logo-container { display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 10px; padding: 0 10px; }
+        .logo-svg { width: 35px; height: 35px; fill: none; stroke: var(--primary); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 8px var(--primary-glow)); }
+        .brand-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand-badge { background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(59, 130, 246, 0.3); margin-left: 5px; font-family: 'JetBrains Mono', monospace; }
+
+        .nav-group { display: flex; flex-direction: column; gap: 8px; }
+
+        .dropbtn {
+            background: transparent; 
+            color: var(--text-muted);
+            border: 1px solid transparent; 
+            padding: 14px 15px;
+            border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+            transition: all 0.2s ease; 
+            display: flex; align-items: center; gap: 12px;
+            width: 100%;
+            text-align: left;
+        }
+        .dropbtn:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+        .dropbtn.active { background: rgba(59, 130, 246, 0.1); color: #fff; border-color: rgba(59, 130, 246, 0.2); }
+        
+        /* Icon rotation when active */
+        .dropbtn .arrow { transition: transform 0.3s; margin-left: auto; font-size: 0.8rem; opacity: 0.5; }
+        .dropbtn.active .arrow { transform: rotate(90deg); opacity: 1; }
+
+        .dropdown { width: 100%; }
+        
+        /* ACCORDION MENU STYLE (FIXED) */
+        .dropdown-content {
+            display: none; 
+            background: rgba(0, 0, 0, 0.2); /* Sidebar'dan biraz daha koyu */
+            margin-top: 5px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        /* Açıldığında görünmesi için */
+        .dropdown-content.show { display: block; animation: fadeIn 0.3s; }
+        
+        .dropdown-content a { 
+            color: #94a3b8; 
+            padding: 12px 20px 12px 50px; /* Soldan girinti */
+            text-decoration: none; 
+            display: flex; justify-content: space-between; 
+            font-size: 0.85rem; 
+            border-bottom: 1px solid rgba(255,255,255,0.02); 
+            cursor: pointer;
+            position: relative;
+        }
+        .dropdown-content a::before {
+            content: ''; position: absolute; left: 30px; top: 50%; transform: translateY(-50%);
+            width: 4px; height: 4px; border-radius: 50%; background: #475569;
+        }
+        .dropdown-content a:hover { background: rgba(59, 130, 246, 0.05); color: #fff; }
+        .dropdown-content a:hover::before { background: var(--primary); }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-wrapper {
+            flex: 1;
+            margin-left: 280px; /* Sidebar width ile aynı */
+            padding: 40px;
+            width: calc(100% - 280px);
+            box-sizing: border-box;
         }
 
         .container { max-width: 1400px; margin: 0 auto; }
 
-        /* --- HEADER & NAVIGATION --- */
-        .header-wrap {
-            position: relative; z-index: 1000; 
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 0; margin-bottom: 40px;
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(5px);
+        /* --- SEARCH BAR --- */
+        .search-hero { position: relative; max-width: 100%; margin: 0 auto 30px auto; }
+        .search-hero input {
+            width: 100%; padding: 18px 20px 18px 55px; font-size: 1.1rem;
+            background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
+            border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            color: #fff; transition: all 0.3s;
+            box-sizing: border-box;
         }
-
-        .logo-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .logo-svg { width: 40px; height: 40px; fill: none; stroke: var(--primary); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 8px var(--primary-glow)); }
-        .brand-name { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .brand-badge { background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(59, 130, 246, 0.3); margin-left: 5px; font-family: 'JetBrains Mono', monospace; }
-
-        .nav-actions { display: flex; gap: 15px; flex-wrap: wrap; }
-        
-        .dropbtn {
-            background: rgba(30, 41, 59, 0.6); color: var(--text-main);
-            border: 1px solid var(--border); padding: 10px 20px;
-            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
-            transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;
-            backdrop-filter: blur(4px);
-        }
-        .dropbtn:hover, .dropbtn.active { background: rgba(59, 130, 246, 0.15); border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); color: #fff; }
-
-        .dropdown { position: relative; display: inline-block; }
-        .dropdown-content {
-            display: none; position: absolute; right: 0; top: 110%;
-            background: #0f172a; min-width: 280px;
-            border: 1px solid var(--border); border-radius: 12px;
-            z-index: 2000; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            overflow: hidden; max-height: 80vh; overflow-y: auto;
-        }
-        .dropdown-content a { color: var(--text-muted); padding: 12px 20px; text-decoration: none; display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
-        .dropdown-content a:hover { background: rgba(59, 130, 246, 0.1); color: #fff; padding-left: 25px; transition: 0.2s; }
-        .show { display: block; }
+        .search-hero input:focus { border-color: var(--primary); background: #1e293b; box-shadow: 0 0 25px var(--primary-glow); }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem; }
 
         /* --- CARDS & GRID --- */
-        .grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        @media (max-width: 768px) { .modal-grid { grid-template-columns: 1fr; } }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
         
         .card {
             background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border); padding: 20px; border-radius: 16px;
+            border: 1px solid var(--border); padding: 25px; border-radius: 16px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; overflow: hidden;
         }
-        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0.5; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); border-color: rgba(59, 130, 246, 0.3); }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--primary), transparent); opacity: 0.5; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 30px -5px rgba(0,0,0,0.4); border-color: rgba(59, 130, 246, 0.4); }
 
-        h3 { margin-top: 0; color: var(--primary); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; font-weight: 800; }
+        h3 { margin-top: 0; color: var(--primary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; font-weight: 800; }
 
         /* --- INPUTS --- */
         input, select {
@@ -123,16 +184,10 @@
             text-align: center;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
         }
-        .res-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            text-align: left;
-        }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; }
         .res-item small { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 4px; }
         .res-item span { color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
         .res-item.highlight span { color: var(--accent); font-size: 1.4rem; }
-        .res-item.warn span { color: var(--warn); }
         
         .result-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: #60a5fa; text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); display: block; font-weight: bold; margin-bottom: 5px; }
         .unit-tag { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: block;}
@@ -146,49 +201,61 @@
             max-height: 90vh; overflow-y: auto;
         }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         .close { color: var(--text-muted); float: right; font-size: 28px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .close:hover { color: #fff; transform: rotate(90deg); }
 
-        /* --- FOOTER --- */
+        /* Formula & Lists */
+        .formula-category { margin-bottom: 25px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        .formula-header { background: rgba(59, 130, 246, 0.1); padding: 10px 20px; color: var(--primary); font-weight: bold; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--border); }
+        .formula-item { background: var(--bg-dark); padding: 15px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 80px; }
+        .f-math { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: #fff; margin-bottom: 5px; }
+        .f-desc { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Footer */
         .info-footer {
             margin-top: 60px; padding: 30px; text-align: center;
             border-top: 1px solid var(--border); color: var(--text-muted);
             background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
         }
-        .disclaimer { 
-            font-size: 0.75rem; color: #64748b; margin-top: 15px; opacity: 0.8; 
-            line-height: 1.5; max-width: 800px; margin-left: auto; margin-right: auto;
-        }
-        .contact-link {
-            color: var(--primary); text-decoration: none; 
-            font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
-            border-bottom: 1px solid transparent; transition: 0.2s;
-        }
-        .contact-link:hover { border-bottom-color: var(--primary); color: #fff; }
+        .contact-link { color: var(--primary); text-decoration: none; font-family: 'JetBrains Mono', monospace; }
+        
+        /* Search Tags */
+        .search-results-panel { display: none; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent); border-radius: 12px; }
+        .search-tag { background: var(--accent); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; }
 
-        /* Badges & Tables */
+        /* Badges */
         .lab-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; margin-left: auto; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); }
         .lab-badge.hot { color: #fb7185; border-color: rgba(244, 63, 94, 0.3); background: rgba(244, 63, 94, 0.1); }
         .lab-badge.new { color: #34d399; border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.1); }
-        
         .comp-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .comp-table th { background: rgba(59, 130, 246, 0.1); padding: 12px; text-align: left; color: var(--primary); border-bottom: 2px solid var(--border); font-size: 0.85rem; }
         .comp-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; color: var(--text-muted); }
-        .comp-table tr:hover td { color: #fff; background: rgba(255,255,255,0.02); }
-
-        /* Viewers */
         .viewer-container { width: 100%; height: 500px; background: #020617; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border); box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
         .overlay-tools { position: absolute; top: 15px; left: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
         .tool-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 12px; cursor: pointer; border-radius: 6px; font-size: 0.8rem; width: auto; text-align: left; backdrop-filter: blur(4px); transition: 0.2s;}
         .tool-btn:hover, .tool-btn.active { background: var(--primary); border-color: var(--primary); }
+
+        /* RESPONSIVE Sidebar */
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .sidebar { 
+                position: relative; 
+                width: 100%; height: auto; 
+                border-right: none; border-bottom: 1px solid var(--border);
+                padding: 15px; box-sizing: border-box;
+                overflow-y: visible; /* Mobilde scroll gerekmez, content uzar */
+            }
+            .main-wrapper { margin-left: 0; width: 100%; padding: 20px; }
+            .modal-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <div class="header-wrap">
+    <nav class="sidebar">
         <a href="#" class="logo-container">
             <svg class="logo-svg" viewBox="0 0 24 24">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
@@ -200,9 +267,16 @@
             </div>
         </a>
 
-        <div class="nav-actions">
+        <div class="nav-group">
+            <button onclick="openModal('formulaModal')" class="dropbtn" style="border-color: rgba(16, 185, 129, 0.4);">
+                <span style="color:#34d399">∑</span> Formulas
+            </button>
+
             <div class="dropdown">
-                <button onclick="toggleDropdown('mechDropdown')" class="dropbtn"><span>⚙️</span> Mechanical</button>
+                <button onclick="toggleDropdown('mechDropdown')" class="dropbtn">
+                    <span>⚙️</span> Mechanical 
+                    <span class="arrow">›</span>
+                </button>
                 <div id="mechDropdown" class="dropdown-content">
                     <a onclick="openModal('threeModal')">🧊 3D Studio <span class="lab-badge hot">FIXED</span></a>
                     <a onclick="openModal('sketchModal')">🎨 Sketch 2D <span class="lab-badge hot">TOUCH</span></a>
@@ -228,7 +302,10 @@
             </div>
 
             <div class="dropdown">
-                <button onclick="toggleDropdown('electricDropdown')" class="dropbtn" style="border-color: rgba(245, 158, 11, 0.4);"><span style="color:#fbbf24">⚡</span> Electrical</button>
+                <button onclick="toggleDropdown('electricDropdown')" class="dropbtn" style="border-color: rgba(245, 158, 11, 0.1);">
+                    <span style="color:#fbbf24">⚡</span> Electrical 
+                    <span class="arrow">›</span>
+                </button>
                 <div id="electricDropdown" class="dropdown-content">
                     <a onclick="openModal('ebikeModal')">🚲 EV & E-Bike Sim</a>
                     <a onclick="openModal('batteryModal')">🔋 Battery Designer</a>
@@ -239,7 +316,10 @@
             </div>
 
             <div class="dropdown">
-                <button onclick="toggleDropdown('eduDropdown')" class="dropbtn"><span>🎓</span> Reference</button>
+                <button onclick="toggleDropdown('eduDropdown')" class="dropbtn">
+                    <span>🎓</span> Reference 
+                    <span class="arrow">›</span>
+                </button>
                 <div id="eduDropdown" class="dropdown-content">
                       <a onclick="openModal('materialModal')">📚 Materials Lib</a>
                       <a onclick="openModal('gcodeModal')">📜 G-Code List</a>
@@ -251,21 +331,110 @@
                 </div>
             </div>
         </div>
+        
+        <div style="margin-top:auto; font-size:0.75rem; color:var(--text-muted); padding-top:20px; border-top:1px solid var(--border);">
+            System Status: <span style="color:#10b981">● Online</span><br>
+            Ver: 2.1.5
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="container">
+            
+            <div class="search-hero">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="globalSearch" placeholder="Search tools, formulas, or calculators (e.g. 'Gear', 'Stress')..." onkeyup="filterTools()">
+            </div>
+            
+            <div id="dynamicSearchResults" class="search-results-panel"></div>
+
+            <div class="grid" id="mainGrid">
+                <div class="card"><h3>📏 Length</h3><div class="input-group"><input type="number" id="lenInput" oninput="convert('len')"><div class="row"><select id="lenFrom" onchange="convert('len')"><option value="1">m</option><option value="1000">km</option><option value="0.01">cm</option><option value="0.001">mm</option><option value="0.0254">in</option><option value="0.3048">ft</option><option value="1609.34">mi</option></select>➔<select id="lenTo" onchange="convert('len')"><option value="1">m</option><option value="1000">km</option><option value="0.01">cm</option><option value="0.001">mm</option><option value="0.0254">in</option><option value="0.3048">ft</option><option value="1609.34">mi</option></select></div></div><div class="result-box"><span id="lenRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>🟦 Area</h3><div class="input-group"><input type="number" id="areInput" oninput="convert('are')"><div class="row"><select id="areFrom" onchange="convert('are')"><option value="1">m²</option><option value="1000000">km²</option><option value="0.0001">cm²</option><option value="0.000001">mm²</option><option value="0.092903">ft²</option><option value="0.000645">in²</option></select>➔<select id="areTo" onchange="convert('are')"><option value="1">m²</option><option value="1000000">km²</option><option value="0.0001">cm²</option><option value="0.000001">mm²</option><option value="0.092903">ft²</option><option value="0.000645">in²</option></select></div></div><div class="result-box"><span id="areRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>⚡ Speed</h3><div class="input-group"><input type="number" id="spdInput" oninput="convert('spd')"><div class="row"><select id="spdFrom" onchange="convert('spd')"><option value="0.277778">km/h</option><option value="1">m/s</option><option value="0.44704">mph</option><option value="0.514444">knot</option></select>➔<select id="spdTo" onchange="convert('spd')"><option value="0.277778">km/h</option><option value="1">m/s</option><option value="0.44704">mph</option><option value="0.514444">knot</option></select></div></div><div class="result-box"><span id="spdRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>⚙️ Torque</h3><div class="input-group"><input type="number" id="trqInput" oninput="convert('trq')"><div class="row"><select id="trqFrom" onchange="convert('trq')"><option value="1">Nm</option><option value="1.35582">lb-ft</option><option value="0.112985">lb-in</option><option value="9.80665">kgm</option></select>➔<select id="trqTo" onchange="convert('trq')"><option value="1">Nm</option><option value="1.35582">lb-ft</option><option value="0.112985">lb-in</option><option value="9.80665">kgm</option></select></div></div><div class="result-box"><span id="trqRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>💪 Force</h3><div class="input-group"><input type="number" id="frcInput" oninput="convert('frc')"><div class="row"><select id="frcFrom" onchange="convert('frc')"><option value="1">N</option><option value="1000">kN</option><option value="4.44822">lbf</option><option value="9.80665">kgf</option></select>➔<select id="frcTo" onchange="convert('frc')"><option value="1">N</option><option value="1000">kN</option><option value="4.44822">lbf</option><option value="9.80665">kgf</option></select></div></div><div class="result-box"><span id="frcRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>🏎️ Power</h3><div class="input-group"><input type="number" id="pwrInput" oninput="convert('pwr')"><div class="row"><select id="pwrFrom" onchange="convert('pwr')"><option value="1">kW</option><option value="0.001">W</option><option value="0.735499">HP (Met)</option><option value="0.7457">HP (Mech)</option></select>➔<select id="pwrTo" onchange="convert('pwr')"><option value="1">kW</option><option value="0.001">W</option><option value="0.735499">HP (Met)</option><option value="0.7457">HP (Mech)</option></select></div></div><div class="result-box"><span id="pwrRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>🎈 Pressure</h3><div class="input-group"><input type="number" id="prsInput" oninput="convert('prs')"><div class="row"><select id="prsFrom" onchange="convert('prs')"><option value="1">Bar</option><option value="0.00001">Pa</option><option value="0.068947">Psi</option><option value="1.01325">atm</option></select>➔<select id="prsTo" onchange="convert('prs')"><option value="1">Bar</option><option value="0.00001">Pa</option><option value="0.068947">Psi</option><option value="1.01325">atm</option></select></div></div><div class="result-box"><span id="prsRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>🏛️ Stress</h3><div class="input-group"><input type="number" id="strInput" oninput="convert('str')"><div class="row"><select id="strFrom" onchange="convert('str')"><option value="1">MPa</option><option value="1000">GPa</option><option value="0.006894">psi</option><option value="6.89475">ksi</option></select>➔<select id="strTo" onchange="convert('str')"><option value="1">MPa</option><option value="1000">GPa</option><option value="0.006894">psi</option><option value="6.89475">ksi</option></select></div></div><div class="result-box"><span id="strRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>⏱️ Time</h3><div class="input-group"><input type="number" id="timInput" oninput="convert('tim')"><div class="row"><select id="timFrom" onchange="convert('tim')"><option value="3600">Hr</option><option value="60">Min</option><option value="1">Sec</option><option value="86400">Day</option></select>➔<select id="timTo" onchange="convert('tim')"><option value="3600">Hr</option><option value="60">Min</option><option value="1">Sec</option><option value="86400">Day</option></select></div></div><div class="result-box"><span id="timRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>⚖️ Weight</h3><div class="input-group"><input type="number" id="wgtInput" oninput="convert('wgt')"><div class="row"><select id="wgtFrom" onchange="convert('wgt')"><option value="1">kg</option><option value="0.001">g</option><option value="1000">ton</option><option value="0.453592">lb</option></select>➔<select id="wgtTo" onchange="convert('wgt')"><option value="1">kg</option><option value="0.001">g</option><option value="1000">ton</option><option value="0.453592">lb</option></select></div></div><div class="result-box"><span id="wgtRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>🥛 Volume</h3><div class="input-group"><input type="number" id="volInput" oninput="convert('vol')"><div class="row"><select id="volFrom" onchange="convert('vol')"><option value="1">L</option><option value="0.001">ml</option><option value="1000">m³</option><option value="3.78541">gal</option></select>➔<select id="volTo" onchange="convert('vol')"><option value="1">L</option><option value="0.001">ml</option><option value="1000">m³</option><option value="3.78541">gal</option></select></div></div><div class="result-box"><span id="volRes" class="result-val">0</span></div></div>
+                <div class="card"><h3>📈 Finance</h3><div class="input-group"><input type="number" id="pCap" placeholder="Capital"><div class="row"><input type="number" id="pRate" value="45" placeholder="%"><input type="number" id="pTime" value="12" placeholder="Mo"></div><button onclick="calcFin()">Calculate</button></div><div class="result-box"><span id="finRes" class="result-val">0</span></div></div>
+            </div>
+
+            <footer class="info-footer">
+                <h3>Unitly Lab © 2026</h3>
+                <div style="margin: 10px 0;">
+                    <a href="mailto:unitlylab@gmail.com" class="contact-link">unitlylab@gmail.com</a>
+                </div>
+                <p class="disclaimer">
+                    <strong>Disclaimer:</strong> All calculations, data, and information provided by Unitly Lab are for educational and reference purposes only. 
+                    Use these tools as an estimation aid, not as a replacement for professional verification.
+                </p>
+            </footer>
+
+        </div>
     </div>
 
-    <div class="grid">
-        <div class="card"><h3>📏 Length</h3><div class="input-group"><input type="number" id="lenInput" oninput="convert('len')"><div class="row"><select id="lenFrom" onchange="convert('len')"><option value="1">m</option><option value="1000">km</option><option value="0.01">cm</option><option value="0.001">mm</option><option value="0.0254">in</option><option value="0.3048">ft</option><option value="1609.34">mi</option></select>➔<select id="lenTo" onchange="convert('len')"><option value="1">m</option><option value="1000">km</option><option value="0.01">cm</option><option value="0.001">mm</option><option value="0.0254">in</option><option value="0.3048">ft</option><option value="1609.34">mi</option></select></div></div><div class="result-box"><span id="lenRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>🟦 Area</h3><div class="input-group"><input type="number" id="areInput" oninput="convert('are')"><div class="row"><select id="areFrom" onchange="convert('are')"><option value="1">m²</option><option value="1000000">km²</option><option value="0.0001">cm²</option><option value="0.000001">mm²</option><option value="0.092903">ft²</option><option value="0.000645">in²</option></select>➔<select id="areTo" onchange="convert('are')"><option value="1">m²</option><option value="1000000">km²</option><option value="0.0001">cm²</option><option value="0.000001">mm²</option><option value="0.092903">ft²</option><option value="0.000645">in²</option></select></div></div><div class="result-box"><span id="areRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>⚡ Speed</h3><div class="input-group"><input type="number" id="spdInput" oninput="convert('spd')"><div class="row"><select id="spdFrom" onchange="convert('spd')"><option value="0.277778">km/h</option><option value="1">m/s</option><option value="0.44704">mph</option><option value="0.514444">knot</option></select>➔<select id="spdTo" onchange="convert('spd')"><option value="0.277778">km/h</option><option value="1">m/s</option><option value="0.44704">mph</option><option value="0.514444">knot</option></select></div></div><div class="result-box"><span id="spdRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>⚙️ Torque</h3><div class="input-group"><input type="number" id="trqInput" oninput="convert('trq')"><div class="row"><select id="trqFrom" onchange="convert('trq')"><option value="1">Nm</option><option value="1.35582">lb-ft</option><option value="0.112985">lb-in</option><option value="9.80665">kgm</option></select>➔<select id="trqTo" onchange="convert('trq')"><option value="1">Nm</option><option value="1.35582">lb-ft</option><option value="0.112985">lb-in</option><option value="9.80665">kgm</option></select></div></div><div class="result-box"><span id="trqRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>💪 Force</h3><div class="input-group"><input type="number" id="frcInput" oninput="convert('frc')"><div class="row"><select id="frcFrom" onchange="convert('frc')"><option value="1">N</option><option value="1000">kN</option><option value="4.44822">lbf</option><option value="9.80665">kgf</option></select>➔<select id="frcTo" onchange="convert('frc')"><option value="1">N</option><option value="1000">kN</option><option value="4.44822">lbf</option><option value="9.80665">kgf</option></select></div></div><div class="result-box"><span id="frcRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>🏎️ Power</h3><div class="input-group"><input type="number" id="pwrInput" oninput="convert('pwr')"><div class="row"><select id="pwrFrom" onchange="convert('pwr')"><option value="1">kW</option><option value="0.001">W</option><option value="0.735499">HP (Met)</option><option value="0.7457">HP (Mech)</option></select>➔<select id="pwrTo" onchange="convert('pwr')"><option value="1">kW</option><option value="0.001">W</option><option value="0.735499">HP (Met)</option><option value="0.7457">HP (Mech)</option></select></div></div><div class="result-box"><span id="pwrRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>🎈 Pressure</h3><div class="input-group"><input type="number" id="prsInput" oninput="convert('prs')"><div class="row"><select id="prsFrom" onchange="convert('prs')"><option value="1">Bar</option><option value="0.00001">Pa</option><option value="0.068947">Psi</option><option value="1.01325">atm</option></select>➔<select id="prsTo" onchange="convert('prs')"><option value="1">Bar</option><option value="0.00001">Pa</option><option value="0.068947">Psi</option><option value="1.01325">atm</option></select></div></div><div class="result-box"><span id="prsRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>🏛️ Stress</h3><div class="input-group"><input type="number" id="strInput" oninput="convert('str')"><div class="row"><select id="strFrom" onchange="convert('str')"><option value="1">MPa</option><option value="1000">GPa</option><option value="0.006894">psi</option><option value="6.89475">ksi</option></select>➔<select id="strTo" onchange="convert('str')"><option value="1">MPa</option><option value="1000">GPa</option><option value="0.006894">psi</option><option value="6.89475">ksi</option></select></div></div><div class="result-box"><span id="strRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>⏱️ Time</h3><div class="input-group"><input type="number" id="timInput" oninput="convert('tim')"><div class="row"><select id="timFrom" onchange="convert('tim')"><option value="3600">Hr</option><option value="60">Min</option><option value="1">Sec</option><option value="86400">Day</option></select>➔<select id="timTo" onchange="convert('tim')"><option value="3600">Hr</option><option value="60">Min</option><option value="1">Sec</option><option value="86400">Day</option></select></div></div><div class="result-box"><span id="timRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>⚖️ Weight</h3><div class="input-group"><input type="number" id="wgtInput" oninput="convert('wgt')"><div class="row"><select id="wgtFrom" onchange="convert('wgt')"><option value="1">kg</option><option value="0.001">g</option><option value="1000">ton</option><option value="0.453592">lb</option></select>➔<select id="wgtTo" onchange="convert('wgt')"><option value="1">kg</option><option value="0.001">g</option><option value="1000">ton</option><option value="0.453592">lb</option></select></div></div><div class="result-box"><span id="wgtRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>🥛 Volume</h3><div class="input-group"><input type="number" id="volInput" oninput="convert('vol')"><div class="row"><select id="volFrom" onchange="convert('vol')"><option value="1">L</option><option value="0.001">ml</option><option value="1000">m³</option><option value="3.78541">gal</option></select>➔<select id="volTo" onchange="convert('vol')"><option value="1">L</option><option value="0.001">ml</option><option value="1000">m³</option><option value="3.78541">gal</option></select></div></div><div class="result-box"><span id="volRes" class="result-val">0</span></div></div>
-        <div class="card"><h3>📈 Finance</h3><div class="input-group"><input type="number" id="pCap" placeholder="Capital"><div class="row"><input type="number" id="pRate" value="45" placeholder="%"><input type="number" id="pTime" value="12" placeholder="Mo"></div><button onclick="calcFin()">Calculate</button></div><div class="result-box"><span id="finRes" class="result-val">0</span></div></div>
+    <div id="formulaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('formulaModal')">&times;</span>
+            <h3>∑ Engineering Handbook</h3>
+            
+            <div class="formula-category">
+                <div class="formula-header">📐 Mathematics & Geometry</div>
+                <div class="formula-grid">
+                    <div class="formula-item"><div class="f-math">A = πr²</div><div class="f-desc">Area of Circle</div></div>
+                    <div class="formula-item"><div class="f-math">C = 2πr</div><div class="f-desc">Circumference</div></div>
+                    <div class="formula-item"><div class="f-math">a² + b² = c²</div><div class="f-desc">Pythagoras</div></div>
+                    <div class="formula-item"><div class="f-math">V = (4/3)πr³</div><div class="f-desc">Sphere Volume</div></div>
+                    <div class="formula-item"><div class="f-math">x = -b ± √(b²-4ac) / 2a</div><div class="f-desc">Quadratic Formula</div></div>
+                </div>
+            </div>
+
+            <div class="formula-category">
+                <div class="formula-header">⚛️ Physics & Dynamics</div>
+                <div class="formula-grid">
+                    <div class="formula-item"><div class="f-math">F = m · a</div><div class="f-desc">Newton's 2nd Law</div></div>
+                    <div class="formula-item"><div class="f-math">KE = ½mv²</div><div class="f-desc">Kinetic Energy</div></div>
+                    <div class="formula-item"><div class="f-math">PE = m · g · h</div><div class="f-desc">Potential Energy</div></div>
+                    <div class="formula-item"><div class="f-math">W = F · d</div><div class="f-desc">Work</div></div>
+                    <div class="formula-item"><div class="f-math">P = W / t</div><div class="f-desc">Power</div></div>
+                </div>
+            </div>
+
+            <div class="formula-category">
+                <div class="formula-header">🏗️ Mechanics & Strength</div>
+                <div class="formula-grid">
+                    <div class="formula-item"><div class="f-math">σ = F / A</div><div class="f-desc">Stress</div></div>
+                    <div class="formula-item"><div class="f-math">ε = ΔL / L₀</div><div class="f-desc">Strain</div></div>
+                    <div class="formula-item"><div class="f-math">E = σ / ε</div><div class="f-desc">Young's Modulus</div></div>
+                    <div class="formula-item"><div class="f-math">τ = (T · r) / J</div><div class="f-desc">Torsion Stress</div></div>
+                    <div class="formula-item"><div class="f-math">M = F · d</div><div class="f-desc">Moment</div></div>
+                </div>
+            </div>
+            
+            <div class="formula-category">
+                <div class="formula-header">🔥 Thermodynamics & Fluids</div>
+                <div class="formula-grid">
+                    <div class="formula-item"><div class="f-math">PV = nRT</div><div class="f-desc">Ideal Gas Law</div></div>
+                    <div class="formula-item"><div class="f-math">Q = mcΔT</div><div class="f-desc">Heat Transfer</div></div>
+                    <div class="formula-item"><div class="f-math">P = ρ · g · h</div><div class="f-desc">Hydrostatic Press.</div></div>
+                    <div class="formula-item"><div class="f-math">Q = A · v</div><div class="f-desc">Flow Rate</div></div>
+                </div>
+            </div>
+
+            <div class="formula-category">
+                <div class="formula-header">⚡ Electrical</div>
+                <div class="formula-grid">
+                    <div class="formula-item"><div class="f-math">V = I · R</div><div class="f-desc">Ohm's Law</div></div>
+                    <div class="formula-item"><div class="f-math">P = V · I</div><div class="f-desc">Electric Power</div></div>
+                    <div class="formula-item"><div class="f-math">1/R = 1/R₁ + 1/R₂</div><div class="f-desc">Parallel Resistors</div></div>
+                    <div class="formula-item"><div class="f-math">f = 1 / T</div><div class="f-desc">Frequency</div></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="threeModal" class="modal">
@@ -488,19 +657,6 @@
 
     <div id="stressModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('stressModal')">&times;</span><h3>📈 Stress Calculator</h3><div class="modal-grid"><div class="input-group"><small>Force (N)</small><input type="number" id="stressF" value="5000"><small>Area (mm²)</small><input type="number" id="stressA" value="50"><small>Orig. Length (mm)</small><input type="number" id="stressL0" value="100"><small>Extension (mm)</small><input type="number" id="stressDl" value="0.5"><button onclick="calcStress()">Calculate</button></div><div class="result-box"><div class="res-item highlight"><small>Stress (σ)</small><span id="resSigma">0 MPa</span></div><div class="res-item"><small>Strain (ε)</small><span id="resEpsilon">0</span></div><hr><div class="res-item"><small>Modulus (E)</small><span id="resModulus">0 GPa</span></div></div></div></div></div>
 
-    <footer class="info-footer">
-        <h3>Unitly Lab © 2026</h3>
-        <div style="margin: 10px 0;">
-            <a href="mailto:unitlylab@gmail.com" class="contact-link">unitlylab@gmail.com</a>
-        </div>
-        <p class="disclaimer">
-            <strong>Disclaimer:</strong> All calculations, data, and information provided by Unitly Lab are for educational and reference purposes only. 
-            While we strive for high accuracy based on global engineering standards (ISO/ASME), real-world results may vary due to environmental factors, material inconsistencies, and specific machinery conditions. 
-            Use these tools as an estimation aid, not as a replacement for professional verification. Unitly Lab assumes no liability for errors or damages resulting from the use of this software.
-        </p>
-    </footer>
-</div>
-
 <script>
     // --- UTILS ---
     function safeFloat(id, def = 0) {
@@ -508,23 +664,80 @@
         return el && !isNaN(parseFloat(el.value)) ? parseFloat(el.value) : def;
     }
 
+    // UPDATED DROPDOWN LOGIC FOR ACCORDION
     function toggleDropdown(id) { 
         var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) { if (dropdowns[i].id !== id) dropdowns[i].classList.remove('show'); }
-        document.getElementById(id).classList.toggle("show"); 
+        var btns = document.getElementsByClassName("dropbtn");
+        
+        // Bu fonksiyon, diğer açık menüleri kapatır ve seçileni açar/kapatır
+        var current = document.getElementById(id);
+        var isAlreadyOpen = current.classList.contains('show');
+
+        // Close all first
+        for (var i = 0; i < dropdowns.length; i++) { 
+            dropdowns[i].classList.remove('show'); 
+        }
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.remove('active');
+        }
+
+        // Toggle current if it wasn't open
+        if (!isAlreadyOpen) {
+            current.classList.add("show");
+            // Highlight the button that opened it
+            var btn = current.previousElementSibling;
+            if(btn) btn.classList.add("active");
+        }
     }
     
-    // Global close handler
+    // Global close handler - Not needed for accordion as much, but good for cleanup
+    // We removed the "close on outside click" for sidebar menus to make it less annoying
     window.onclick = function(event) {
-        if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn span')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
-            }
+        if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn span') && !event.target.closest('.sidebar')) {
+            // Optional: Close menus if clicking main content? 
+            // For now, let's keep them open as it's an accordion style
         }
     }
 
-    // FIX: Animasyon ID'si saklanarak modal kapanınca durdurulacak
+    // --- SEARCH FUNCTION ---
+    function filterTools() {
+        let input = document.getElementById('globalSearch').value.toUpperCase();
+        let cards = document.getElementsByClassName('card');
+        let menuItems = document.querySelectorAll('.dropdown-content a');
+        let resultPanel = document.getElementById('dynamicSearchResults');
+        
+        // 1. Filter visible cards
+        for (let card of cards) {
+            let txt = card.innerText || card.textContent;
+            card.style.display = txt.toUpperCase().indexOf(input) > -1 ? "" : "none";
+        }
+
+        // 2. Search in hidden menus and create shortcut buttons
+        resultPanel.innerHTML = "";
+        if(input.length > 1) {
+            let found = false;
+            menuItems.forEach(item => {
+                let txt = item.innerText;
+                if(txt.toUpperCase().indexOf(input) > -1) {
+                    found = true;
+                    // Create a shortcut button
+                    let btn = document.createElement('a');
+                    btn.className = 'search-tag';
+                    btn.innerHTML = txt;
+                    btn.onclick = function() { 
+                        // Execute the same onclick as the menu item
+                        item.click(); 
+                    };
+                    resultPanel.appendChild(btn);
+                }
+            });
+            resultPanel.style.display = found ? "flex" : "none";
+        } else {
+            resultPanel.style.display = "none";
+        }
+    }
+
+    // Animation handler
     let animationId = null; 
 
     function openModal(id) { 
@@ -539,14 +752,13 @@
     function closeModal(id) { 
         document.getElementById(id).style.display = "none"; 
         
-        // FIX: Three.js modalı kapanınca animasyonu durdur (Pil tasarrufu)
         if(id === 'threeModal' && animationId) {
             cancelAnimationFrame(animationId);
             animationId = null;
         }
     }
 
-    // --- SEARCH FUNCTIONS ---
+    // --- SEARCH FUNCTIONS (INTERNAL) ---
     function searchMaterials() {
         let input = document.getElementById('matSearch').value.toUpperCase();
         let rows = document.getElementById('matTableBody').getElementsByTagName('tr');
@@ -607,9 +819,7 @@
         ctx.beginPath(); ctx.arc(j2x, j2y, 6, 0, 2*Math.PI); ctx.fillStyle = '#f87171'; ctx.fill();
     }
 
-    // --- ENGINEERING LOGIC (CORRECTED) ---
-
-    // 1. Fits & Tolerances (ISO 286 Simple Logic)
+    // --- ENGINEERING LOGIC ---
     function calcFits(){
         const d = safeFloat('fitDia');
         const type = document.getElementById('fitType').value;
@@ -623,7 +833,7 @@
         else if(d <= 18) { h_upper=18; }
         else if(d <= 30) { h_upper=21; }
         else if(d <= 50) { h_upper=25; }
-        else { h_upper=30; } // default >50
+        else { h_upper=30; } 
 
         // Shafts
         if(type === 'H7g6') { // Slide (Gap)
@@ -637,7 +847,6 @@
         } 
         else if(type === 'H7h6') { // Clearance (Zero)
              s_upper = 0; 
-             // h6 range approx
              if(d<=3) s_lower=-6;
              else if(d<=6) s_lower=-8;
              else if(d<=10) s_lower=-9;
@@ -647,7 +856,6 @@
              document.getElementById('fitValRes').innerText = "Clearance / Locational";
         }
         else if(type === 'H7p6') { // Press (Interference)
-             // p6 range approx
              if(d<=3){ s_upper=12; s_lower=6; }
              else if(d<=6){ s_upper=20; s_lower=12; }
              else if(d<=10){ s_upper=24; s_lower=15; }
@@ -661,26 +869,22 @@
         document.getElementById('fitShaftRes').innerText = `${(s_upper/1000).toFixed(3)} / ${(s_lower/1000).toFixed(3)}`;
     }
 
-    // 2. Beam Deflection (Cantilever vs Simply Supported)
     function calcBeamPro(){
         const F = safeFloat('beamF');
         const L = safeFloat('beamL');
-        const E = safeFloat('beamE') * 1000; // Convert GPa to MPa (N/mm2)
+        const E = safeFloat('beamE') * 1000; 
         const I = safeFloat('beamI');
         const type = document.getElementById('beamType').value;
         
         let def = 0;
         if(type === 'cantilever') {
-            // FL^3 / 3EI
             def = (F * Math.pow(L, 3)) / (3 * E * I);
         } else {
-            // Simply Supported: FL^3 / 48EI (Point load at center)
             def = (F * Math.pow(L, 3)) / (48 * E * I);
         }
         document.getElementById('resDef').innerText = def.toFixed(3) + " mm";
     }
 
-    // 3. Stress Calc
     function calcStress() {
         const F = safeFloat('stressF');
         const A = safeFloat('stressA');
@@ -703,7 +907,6 @@
         }
     }
 
-    // 4. EV Sim
     function calcMobility() {
         const V = safeFloat('evV');
         const Ah = safeFloat('evAh');
@@ -735,7 +938,6 @@
         document.getElementById('resCost').innerText = cost.toFixed(2) + " ₺";
     }
 
-    // 5. Battery Architect
     function calcBattery() {
         const targetV = safeFloat('batTargetV');
         const targetAh = safeFloat('batTargetAh');
@@ -765,7 +967,6 @@
         document.getElementById('batMaxV').innerText = maxV.toFixed(1) + " V";
     }
 
-    // 6. CNC Calc
     function calcCNC() {
         const vc = safeFloat('matType'); 
         const d = safeFloat('cncD');
@@ -774,7 +975,6 @@
         const ae = safeFloat('cncAe');
         const ap = safeFloat('cncAp');
 
-        // FIX: Sıfıra bölme kontrolü
         if(d <= 0) { document.getElementById('resRPM').innerText = "Err"; return; }
 
         const rpm = (vc * 1000) / (Math.PI * d);
@@ -787,14 +987,12 @@
         document.getElementById('resChip').innerText = fz + " mm";
     }
 
-    // 7. Lathe Calc
     function calcLathe() {
         const dia = safeFloat('latheDia');
         const vc = safeFloat('latheMat');
         const ap = safeFloat('latheAp');
         const fn = safeFloat('latheFn');
 
-        // FIX: Sıfıra bölme kontrolü
         if(dia <= 0) { document.getElementById('latheRPM').innerText = "Err (Dia)"; return; }
 
         const rpm = (vc * 1000) / (Math.PI * dia);
@@ -885,12 +1083,11 @@
         document.getElementById('cabStd').innerText = std.find(s=>s>=sect) || "Check Max";
     }
     function calcLedResistor(){const r = (safeFloat('ledVs')-safeFloat('ledVf'))/(safeFloat('ledI')/1000); document.getElementById('resLedOhm').innerText = r.toFixed(0) + " Ω";}
-    // FIX: Sıfıra bölme kontrolü
     function calcOhm(){const v=safeFloat('ohmV'), i=safeFloat('ohmI'); if(v&&i) document.getElementById('ohmR').value = v/i;}
     function calcStepper(){document.getElementById('stepRes').innerText = ((360/1.8*16)/safeFloat('transVal')).toFixed(2);}
     function calcLinterp(){document.getElementById('lres').innerText = (safeFloat('ly1')+((safeFloat('ltx')-safeFloat('lx1'))*(safeFloat('ly2')-safeFloat('ly1'))/(safeFloat('lx2')-safeFloat('lx1')))).toFixed(4);}
 
-    // --- 2D SKETCH LOGIC (UPDATED WITH TOUCH) ---
+    // --- 2D SKETCH LOGIC ---
     let canvas, ctx, shapes=[], points=[], activeTool='pencil', isDrawing=false, startPoint=null;
     
     function initCanvas(){ 
@@ -1075,7 +1272,7 @@
         document.getElementById('analysisResult').innerText = "Area: " + total.toFixed(0) + " mm² (Approx)";
     }
 
-    // --- 3D STUDIO LOGIC (FIXED MEMORY & RESIZE) ---
+    // --- 3D STUDIO LOGIC ---
     let scene, camera, renderer, controls, raycaster, mouse;
     let is3DDrawMode = false;
     let linePoints = [];
@@ -1114,7 +1311,6 @@
             renderer.setSize(width, height);
         });
 
-        // FIX: Animasyonu bir değişkene atayarak kontrol edilebilir yapıyoruz
         function animate() { 
             animationId = requestAnimationFrame(animate); 
             controls.update(); 
@@ -1145,10 +1341,9 @@
         mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
         
-        // FIX: Raycaster mantık hatası düzeltildi
         const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
         const target = new THREE.Vector3();
-        const intersect = raycaster.ray.intersectPlane(plane, target); // Dönüş değerini kontrol et
+        const intersect = raycaster.ray.intersectPlane(plane, target); 
 
         if(intersect){
             target.x = Math.round(target.x);
