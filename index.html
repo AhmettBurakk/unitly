@@ -6,6 +6,8 @@
     <title>Unitly Lab - Global Engineering Suite</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -30,6 +32,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
+            /* Arka plan görseli yerine Particles.js gelecek ama fallback olarak kalsın */
             background-image: 
                 radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
                 linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
@@ -40,6 +43,17 @@
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
+        }
+
+        /* --- PARTICLES CONTAINER --- */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1; /* En arkada */
+            pointer-events: none; /* Tıklamayı engelleme */
         }
 
         /* --- SIDEBAR STYLING --- */
@@ -122,6 +136,8 @@
             padding: 40px;
             width: calc(100% - 280px);
             box-sizing: border-box;
+            position: relative; 
+            z-index: 10; /* Partiküllerin üstünde */
         }
 
         .container { max-width: 1400px; margin: 0 auto; }
@@ -234,6 +250,14 @@
         .tool-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 12px; cursor: pointer; border-radius: 6px; font-size: 0.8rem; width: auto; text-align: left; backdrop-filter: blur(4px); transition: 0.2s;}
         .tool-btn:hover, .tool-btn.active { background: var(--primary); border-color: var(--primary); }
 
+        /* --- VISUALIZATION CONTAINERS --- */
+        .sim-container {
+            width: 100%; height: 250px; 
+            background: #020617; border: 1px solid var(--border);
+            border-radius: 12px; overflow: hidden; position: relative;
+            margin-bottom: 15px; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+
         /* RESPONSIVE Sidebar */
         @media (max-width: 900px) {
             body { flex-direction: column; }
@@ -250,6 +274,8 @@
     </style>
 </head>
 <body>
+
+    <div id="particles-js"></div>
 
     <nav class="sidebar">
         <a href="#" class="logo-container">
@@ -277,8 +303,8 @@
                     <a onclick="openModal('threeModal')">🧊 3D Studio <span class="lab-badge hot">FIXED</span></a>
                     <a onclick="openModal('sketchModal')">🎨 Sketch 2D <span class="lab-badge hot">TOUCH</span></a>
                     <a onclick="openModal('robotModal')">🤖 Robot Kinematics</a>
-                    <a onclick="openModal('gearDesignModal')">⚙️ Gear Module / Dim. <span class="lab-badge new">NEW</span></a>
-                    <a onclick="openModal('latheModal')">🛑 Lathe / Turning</a>
+                    <a onclick="openModal('gearDesignModal')">⚙️ Gear Module / Dim. <span class="lab-badge new">3D</span></a>
+                    <a onclick="openModal('latheModal')">🛑 Lathe / Turning <span class="lab-badge new">3D</span></a>
                     <a onclick="openModal('cncModal')">🏭 Milling / CNC</a>
                     <a onclick="openModal('weldingModal')">🔥 Welding Calc</a>
                     <a onclick="openModal('laserModal')">⚡ Laser Cut Cost</a>
@@ -290,8 +316,8 @@
                     <a onclick="openModal('beltModal')">⛓️ Belt & Chain</a>
                     <a onclick="openModal('weightModal')">⚖️ Profile Weight</a>
                     <a onclick="openModal('geomModal')">📐 Material & Volume</a>
-                    <a onclick="openModal('beamModal')">🏗️ Beam Analysis</a>
-                    <a onclick="openModal('stressModal')">📈 Stress Analysis <span class="lab-badge new">NEW</span></a>
+                    <a onclick="openModal('beamModal')">🏗️ Beam Analysis <span class="lab-badge new">FEA</span></a>
+                    <a onclick="openModal('stressModal')">📈 Stress Analysis</a>
                     <a onclick="openModal('thermModal')">🔥 Thermal Exp.</a>
                     <a onclick="openModal('flowModal')">💧 Pipe Flow</a>
                     <a onclick="openModal('printModal')">🖨️ 3D Print Cost</a>
@@ -332,7 +358,7 @@
         
         <div style="margin-top:auto; font-size:0.75rem; color:var(--text-muted); padding-top:20px; border-top:1px solid var(--border);">
             System Status: <span style="color:#10b981">● Online</span><br>
-            Ver: 2.2.0 (Enhanced)
+            Ver: 2.3.0 (Visuals Added)
         </div>
     </nav>
 
@@ -561,13 +587,14 @@
                     <span class="unit-tag">Parameters</span>
                     <div class="row">
                         <div style="flex:1"><small>Material</small><select id="latheMat"><option value="200">Steel (Mild)</option><option value="150">Stainless</option><option value="400">Aluminum</option><option value="180">Cast Iron</option></select></div>
-                        <div style="flex:1"><small>Diameter (mm)</small><input type="number" id="latheDia" value="50"></div>
+                        <div style="flex:1"><small>Diameter (mm)</small><input type="number" id="latheDia" value="50" onchange="calcLathe()"></div>
                     </div>
                     <div class="row">
-                         <div style="flex:1"><small>Depth Cut (mm)</small><input type="number" id="latheAp" value="1.5"></div>
+                         <div style="flex:1"><small>Depth Cut (mm)</small><input type="number" id="latheAp" value="5" onchange="calcLathe()"></div>
                          <div style="flex:1"><small>Feed (mm/rev)</small><input type="number" id="latheFn" value="0.2"></div>
                     </div>
                     <button onclick="calcLathe()">Calculate Cutting Data</button>
+                    <div class="sim-container" id="lathe3D"></div>
                 </div>
                 <div class="result-box">
                     <div class="res-grid">
@@ -648,15 +675,16 @@
                     <div class="row">
                         <div style="flex:1">
                             <small>Module (m)</small>
-                            <input type="number" id="gMod" value="2.0" step="0.25">
+                            <input type="number" id="gMod" value="2.0" step="0.25" onchange="calcGearDesign()">
                         </div>
                         <div style="flex:1">
                             <small>Teeth (z)</small>
-                            <input type="number" id="gTeeth" value="20" step="1">
+                            <input type="number" id="gTeeth" value="20" step="1" onchange="calcGearDesign()">
                         </div>
                     </div>
                     <small>Pressure Angle (Standard 20°)</small>
                     <button onclick="calcGearDesign()">Calculate Dimensions</button>
+                    <div class="sim-container" id="gear3D"></div>
                 </div>
                 <div class="result-box">
                     <div class="res-grid">
@@ -667,21 +695,43 @@
                         <div class="res-item"><small>Dedendum (hf)</small><span id="gDed">0 mm</span></div>
                         <div class="res-item"><small>Tooth Depth (h)</small><span id="gTotalH">0 mm</span></div>
                     </div>
-                    <hr style="border-color:rgba(255,255,255,0.1); margin:15px 0;">
-                    <p style="font-size:0.8rem; color:#94a3b8; text-align:center; margin:0;">
-                         Based on Standard Involute: ha=1m, hf=1.25m
-                    </p>
                 </div>
             </div>
         </div>
     </div>
+    
     <div id="beltModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('beltModal')">&times;</span><h3>⛓️ Belt Length Calc</h3><div class="modal-grid"><div class="input-group"><div class="row"><div style="flex:1"><small>Large Dia</small><input type="number" id="beltD" value="100"></div><div style="flex:1"><small>Small Dia</small><input type="number" id="belt_d" value="50"></div></div><small>Center Dist (mm)</small><input type="number" id="beltC" value="200"><button onclick="calcBelt()">Calculate Length</button></div><div class="result-box"><div>Belt Length</div><div id="beltLenRes" class="result-val">0 mm</div></div></div></div></div>
 
     <div id="weightModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('weightModal')">&times;</span><h3>⚖️ Profile Weight Calculator</h3><div class="modal-grid"><div class="input-group"><div class="row"><div style="flex:1"><small>Profile</small><select id="profileType" onchange="updateProfileInputs()"><option value="round_solid">Round Bar</option><option value="square_hollow">Square Tube</option><option value="plate">Plate</option></select></div><div style="flex:1"><small>Material</small><select id="profileMat"><option value="7.85">Steel</option><option value="2.70">Alu</option></select></div></div><div id="profileInputs"><small>Diameter (mm)</small><input type="number" id="pD" value="20"></div><small>Length (mm)</small><input type="number" id="profL" value="1000"><button onclick="calcProfileWeight()">Calculate Mass</button></div><div class="result-box"><div>Total Weight</div><div id="profWeightRes" class="result-val">0.00 kg</div></div></div></div></div>
 
     <div id="geomModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('geomModal')">&times;</span><h3>📐 Volume & Mass</h3><div class="modal-grid"><div class="input-group"><select id="shapeType" onchange="updateGeomInputs()"><option value="cylinder">Cylinder</option><option value="sphere">Sphere</option><option value="cube">Cube/Block</option></select><select id="matDensity"><option value="7.85">Steel</option><option value="1.0">Water</option></select><div id="geomInputs"></div><button onclick="calcGeomVolume()">Calculate</button></div><div class="result-box"><div>Volume: <span id="geomRes">0</span> mm³</div><hr><div>Mass: <span id="massRes">0</span> kg</div></div></div></div></div>
 
-    <div id="beamModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('beamModal')">&times;</span><h3>🏗️ Beam Deflection</h3><div class="modal-grid"><div class="input-group"><span class="unit-tag">Parameters</span><select id="beamType"><option value="cantilever">Cantilever (Ankastre)</option><option value="simple">Simply Supported (Basit)</option></select><small>Load (N)</small><input type="number" id="beamF" value="1000"><small>Length (mm)</small><input type="number" id="beamL" value="2000"><small>Material (E - GPa)</small><select id="beamE"><option value="210">Steel (210)</option><option value="70">Aluminum (70)</option></select><small>Inertia (I - mm⁴)</small><input type="number" id="beamI" value="100000"><button onclick="calcBeamPro()">Calc Deflection</button></div><div class="result-box"><div>Max Deflection</div><div id="resDef" class="result-val">0.00 mm</div></div></div></div></div>
+    <div id="beamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('beamModal')">&times;</span>
+            <h3>🏗️ Beam Deflection & Analysis</h3>
+            <div class="modal-grid">
+                <div class="input-group">
+                    <span class="unit-tag">Parameters</span>
+                    <select id="beamType"><option value="cantilever">Cantilever (Ankastre)</option><option value="simple">Simply Supported (Basit)</option></select>
+                    <small>Load (N)</small><input type="number" id="beamF" value="1000" oninput="calcBeamPro()">
+                    <small>Length (mm)</small><input type="number" id="beamL" value="2000">
+                    <small>Material (E - GPa)</small><select id="beamE"><option value="210">Steel (210)</option><option value="70">Aluminum (70)</option></select>
+                    <small>Inertia (I - mm⁴)</small><input type="number" id="beamI" value="100000">
+                    <button onclick="calcBeamPro()">Calc Deflection</button>
+                </div>
+                <div class="result-box">
+                    <div>Max Deflection</div>
+                    <div id="resDef" class="result-val">0.00 mm</div>
+                    <hr>
+                    <div style="position:relative; width:100%; height:150px; background:#020617; border-radius:8px; border:1px solid var(--border); margin-top:10px;">
+                        <canvas id="beamCanvas" width="350" height="150" style="width:100%; height:100%;"></canvas>
+                        <div style="position:absolute; bottom:5px; left:5px; font-size:0.7rem; color:#aaa;">Blue: Low Stress • Red: Max Tension</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="thermModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('thermModal')">&times;</span><h3>🔥 Thermal Expansion</h3><div class="modal-grid"><div class="input-group"><small>Length (mm)</small><input type="number" id="thermL" value="100"><small>Delta T (°C)</small><input type="number" id="thermDT" value="100"><small>Material</small><select id="thermMat"><option value="12">Steel</option><option value="23">Aluminum</option><option value="17">Copper</option></select><button onclick="calcThermal()">Calculate</button></div><div class="result-box"><div>Expansion (ΔL)</div><div id="thermRes" class="result-val">0 µm</div></div></div></div></div>
 
@@ -793,11 +843,9 @@
         var dropdowns = document.getElementsByClassName("dropdown-content");
         var btns = document.getElementsByClassName("dropbtn");
         
-        // Bu fonksiyon, diğer açık menüleri kapatır ve seçileni açar/kapatır
         var current = document.getElementById(id);
         var isAlreadyOpen = current.classList.contains('show');
 
-        // Close all first
         for (var i = 0; i < dropdowns.length; i++) { 
             dropdowns[i].classList.remove('show'); 
         }
@@ -805,16 +853,13 @@
             btns[i].classList.remove('active');
         }
 
-        // Toggle current if it wasn't open
         if (!isAlreadyOpen) {
             current.classList.add("show");
-            // Highlight the button that opened it
             var btn = current.previousElementSibling;
             if(btn) btn.classList.add("active");
         }
     }
     
-    // Global close handler
     window.onclick = function(event) {
         if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn span') && !event.target.closest('.sidebar')) {
             // Optional: Close menus if clicking main content? 
@@ -828,13 +873,11 @@
         let menuItems = document.querySelectorAll('.dropdown-content a');
         let resultPanel = document.getElementById('dynamicSearchResults');
         
-        // 1. Filter visible cards
         for (let card of cards) {
             let txt = card.innerText || card.textContent;
             card.style.display = txt.toUpperCase().indexOf(input) > -1 ? "" : "none";
         }
 
-        // 2. Search in hidden menus and create shortcut buttons
         resultPanel.innerHTML = "";
         if(input.length > 1) {
             let found = false;
@@ -842,12 +885,10 @@
                 let txt = item.innerText;
                 if(txt.toUpperCase().indexOf(input) > -1) {
                     found = true;
-                    // Create a shortcut button
                     let btn = document.createElement('a');
                     btn.className = 'search-tag';
                     btn.innerHTML = txt;
                     btn.onclick = function() { 
-                        // Execute the same onclick as the menu item
                         item.click(); 
                     };
                     resultPanel.appendChild(btn);
@@ -862,6 +903,190 @@
     // Animation handler
     let animationId = null; 
 
+    // --- VISUALIZATION MANAGERS ---
+    
+    // 1. LATHE (Turning) Visualizer
+    const LatheVis = {
+        scene: null, camera: null, renderer: null, stock: null, cut: null,
+        init: function() {
+            const container = document.getElementById('lathe3D');
+            if(container.children.length > 0) return; // Already initialized
+
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color(0x020617);
+            
+            this.camera = new THREE.PerspectiveCamera(50, container.clientWidth/container.clientHeight, 0.1, 100);
+            this.camera.position.set(10, 10, 10);
+            this.camera.lookAt(0,0,0);
+
+            this.renderer = new THREE.WebGLRenderer({antialias:true});
+            this.renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(this.renderer.domElement);
+
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5,10,7);
+            this.scene.add(light);
+            this.scene.add(new THREE.AmbientLight(0x404040));
+
+            // Stock (Raw Material)
+            const geo = new THREE.CylinderGeometry(1, 1, 10, 32);
+            const mat = new THREE.MeshPhongMaterial({color: 0x3b82f6, transparent:true, opacity:0.3, wireframe:false});
+            this.stock = new THREE.Mesh(geo, mat);
+            this.stock.rotation.z = Math.PI/2;
+            this.scene.add(this.stock);
+
+            // Cut (Finished Part)
+            const geo2 = new THREE.CylinderGeometry(1, 1, 10, 32);
+            const mat2 = new THREE.MeshPhongMaterial({color: 0x10b981, shininess:100});
+            this.cut = new THREE.Mesh(geo2, mat2);
+            this.cut.rotation.z = Math.PI/2;
+            this.scene.add(this.cut);
+            
+            this.animate();
+        },
+        update: function() {
+            if(!this.stock) return;
+            const dia = safeFloat('latheDia') / 10; // Scale down for view
+            const depth = safeFloat('latheAp') / 10;
+            const finalDia = dia - (depth*2);
+
+            this.stock.scale.set(dia, 1, dia);
+            this.cut.scale.set(finalDia, 1, finalDia);
+            // Simulate cut length visually (static for now)
+            this.cut.scale.y = 0.8; 
+            this.cut.position.x = 1; 
+        },
+        animate: function() {
+            if(!LatheVis.renderer) return;
+            requestAnimationFrame(LatheVis.animate);
+            LatheVis.stock.rotation.x += 0.05; // Spin effect
+            LatheVis.cut.rotation.x += 0.05;
+            LatheVis.renderer.render(LatheVis.scene, LatheVis.camera);
+        }
+    };
+
+    // 2. GEAR Visualizer
+    const GearVis = {
+        scene: null, camera: null, renderer: null, gear: null,
+        init: function() {
+            const container = document.getElementById('gear3D');
+            if(container.children.length > 0) return;
+
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color(0x020617);
+            
+            this.camera = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
+            this.camera.position.set(0, 30, 20);
+            this.camera.lookAt(0,0,0);
+
+            this.renderer = new THREE.WebGLRenderer({antialias:true});
+            this.renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(this.renderer.domElement);
+            
+            new THREE.OrbitControls(this.camera, this.renderer.domElement);
+
+            const light = new THREE.PointLight(0xffffff, 1, 100);
+            light.position.set(10, 20, 10);
+            this.scene.add(light);
+            this.scene.add(new THREE.AmbientLight(0x404040));
+            
+            this.animate();
+        },
+        update: function() {
+            if(this.gear) this.scene.remove(this.gear);
+            
+            const m = safeFloat('gMod');
+            const z = safeFloat('gTeeth');
+            const pitchDia = m * z;
+            const rootDia = (pitchDia - 2.5*m);
+            
+            // Procedural Gear Group
+            this.gear = new THREE.Group();
+            
+            // Hub (Cylinder)
+            const hubGeo = new THREE.CylinderGeometry(rootDia/2, rootDia/2, 5, 32);
+            const hubMat = new THREE.MeshStandardMaterial({color: 0xf59e0b, metalness: 0.5, roughness: 0.5});
+            const hub = new THREE.Mesh(hubGeo, hubMat);
+            this.gear.add(hub);
+
+            // Teeth (Boxes)
+            const toothGeo = new THREE.BoxGeometry(m*1.5, 5, m*2.25);
+            const radius = pitchDia / 2;
+            
+            for(let i=0; i<z; i++) {
+                const angle = (i / z) * Math.PI * 2;
+                const tooth = new THREE.Mesh(toothGeo, hubMat);
+                tooth.position.set(Math.cos(angle)*radius, 0, Math.sin(angle)*radius);
+                tooth.rotation.y = -angle;
+                this.gear.add(tooth);
+            }
+            
+            this.scene.add(this.gear);
+            // Auto zoom roughly
+            this.camera.position.set(0, pitchDia*1.5, pitchDia);
+            this.camera.lookAt(0,0,0);
+        },
+        animate: function() {
+            if(!GearVis.renderer) return;
+            requestAnimationFrame(GearVis.animate);
+            if(GearVis.gear) GearVis.gear.rotation.y += 0.01;
+            GearVis.renderer.render(GearVis.scene, GearVis.camera);
+        }
+    };
+
+    // 3. BEAM HEATMAP (2D Canvas)
+    function drawBeamHeatmap() {
+        const cvs = document.getElementById('beamCanvas');
+        if(!cvs) return;
+        const ctx = cvs.getContext('2d');
+        const w = cvs.width, h = cvs.height;
+        
+        ctx.clearRect(0, 0, w, h);
+        
+        // Beam Base
+        const startX = 20, startY = 75, beamLen = 300, beamThick = 20;
+        const F = safeFloat('beamF');
+        const deflectionScale = F / 200; // Fake scale for visual
+        
+        // Gradient for Heatmap (Stress)
+        const grd = ctx.createLinearGradient(startX, 0, startX+beamLen, 0);
+        grd.addColorStop(0, "#3b82f6"); // Blue (Fixed)
+        grd.addColorStop(0.5, "#f59e0b"); // Yellow
+        grd.addColorStop(1, "#ef4444"); // Red (Max stress at tip)
+
+        ctx.beginPath();
+        if(document.getElementById('beamType').value === 'cantilever') {
+            // Curve bending down
+            ctx.moveTo(startX, startY);
+            ctx.quadraticCurveTo(startX + beamLen/2, startY, startX + beamLen, startY + deflectionScale);
+            ctx.lineTo(startX + beamLen, startY + deflectionScale + beamThick);
+            ctx.quadraticCurveTo(startX + beamLen/2, startY + beamThick, startX, startY + beamThick);
+        } else {
+            // Simple support (bend in middle)
+            ctx.moveTo(startX, startY);
+            ctx.quadraticCurveTo(startX + beamLen/2, startY + deflectionScale, startX + beamLen, startY);
+            ctx.lineTo(startX + beamLen, startY + beamThick);
+            ctx.quadraticCurveTo(startX + beamLen/2, startY + deflectionScale + beamThick, startX, startY + beamThick);
+            // Center stress is red
+            const grd2 = ctx.createLinearGradient(startX, 0, startX+beamLen, 0);
+            grd2.addColorStop(0, "#3b82f6");
+            grd2.addColorStop(0.5, "#ef4444"); 
+            grd2.addColorStop(1, "#3b82f6");
+            ctx.fillStyle = grd2;
+        }
+        
+        ctx.closePath();
+        if(document.getElementById('beamType').value === 'cantilever') ctx.fillStyle = grd;
+        
+        ctx.fill();
+        ctx.strokeStyle = "#fff";
+        ctx.stroke();
+
+        // Draw Support
+        ctx.fillStyle = "#94a3b8";
+        ctx.fillRect(0, 60, 20, 50); // Wall
+    }
+
     function openModal(id) { 
         document.getElementById(id).style.display = "block";
         if(id === 'threeModal') setTimeout(init3D, 100);
@@ -869,8 +1094,16 @@
         if(id === 'robotModal') setTimeout(drawRobot, 100);
         if(id === 'geomModal') updateGeomInputs();
         if(id === 'weightModal') updateProfileInputs();
-        if(id === 'gearDesignModal') calcGearDesign();
-        if(id === 'resistorModal') calcResistor(); // Init resistor calc
+        if(id === 'gearDesignModal') { 
+            setTimeout(() => GearVis.init(), 100);
+            calcGearDesign(); 
+        }
+        if(id === 'latheModal') {
+            setTimeout(() => LatheVis.init(), 100);
+            calcLathe();
+        }
+        if(id === 'beamModal') calcBeamPro();
+        if(id === 'resistorModal') calcResistor(); 
     }
 
     function closeModal(id) { 
@@ -936,17 +1169,11 @@
         const to = document.getElementById('fuelTo').value;
         let res = 0;
 
-        // Constants for conversion
-        // L/100km to MPG = 235.215 / x
-        // L/100km to km/L = 100 / x
-        
         let l100 = 0;
-        // Normalize to L/100km first
         if(from === 'l100') l100 = val;
         else if(from === 'mpg') l100 = 235.215 / val;
         else if(from === 'kml') l100 = 100 / val;
 
-        // Convert to Target
         if(to === 'l100') res = l100;
         else if(to === 'mpg') res = 235.215 / l100;
         else if(to === 'kml') res = 100 / l100;
@@ -1054,6 +1281,7 @@
             def = (F * Math.pow(L, 3)) / (48 * E * I);
         }
         document.getElementById('resDef').innerText = def.toFixed(3) + " mm";
+        drawBeamHeatmap(); // Draw visual
     }
 
     function calcStress() {
@@ -1174,6 +1402,7 @@
         document.getElementById('latheVc').innerText = vc + " m/min";
         document.getElementById('latheMRR').innerText = mrrVal.toFixed(1) + " cm³/min";
         document.getElementById('lathePower').innerText = power.toFixed(1) + " kW";
+        LatheVis.update(); // Update 3D
     }
 
     // --- OTHER CALCULATORS ---
@@ -1233,6 +1462,8 @@
         document.getElementById('gAdd').innerText = ha.toFixed(2) + " mm";
         document.getElementById('gDed').innerText = hf.toFixed(2) + " mm";
         document.getElementById('gTotalH').innerText = h.toFixed(2) + " mm";
+        
+        GearVis.update(); // Update 3D Gear
     }
 
     function calcBelt(){
@@ -1304,14 +1535,10 @@
 
         // Update Visuals
         const colors = ['black','brown','red','orange','yellow','green','blue','violet','grey','white','gold','silver'];
-        // Band 1
         document.getElementById('vBand1').style.backgroundColor = colors[b1];
-        // Band 2
         document.getElementById('vBand2').style.backgroundColor = colors[b2];
-        // Multiplier Color Mapping
         const mulMap = {1:'black', 10:'brown', 100:'red', 1000:'orange', 10000:'yellow', 100000:'green', 1000000:'blue', 0.1:'gold', 0.01:'silver'};
         document.getElementById('vMul').style.backgroundColor = mulMap[mul];
-        // Tolerance Color Mapping
         const tolMap = {1:'brown', 2:'red', 5:'gold', 10:'silver'};
         document.getElementById('vTol').style.backgroundColor = tolMap[tol];
     }
@@ -1623,6 +1850,31 @@
     function toggleWireframe(){ 
         scene.children.forEach(c => { if(c.type==='Mesh' && c.material) c.material.wireframe = !c.material.wireframe; });
     }
+
+    // --- PARTICLES INIT ---
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": "#3b82f6" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.5, "random": false },
+        "size": { "value": 3, "random": true },
+        "line_linked": { "enable": true, "distance": 150, "color": "#3b82f6", "opacity": 0.2, "width": 1 },
+        "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" },
+          "onclick": { "enable": true, "mode": "push" },
+          "resize": true
+        },
+        "modes": {
+          "grab": { "distance": 140, "line_linked": { "opacity": 1 } }
+        }
+      },
+      "retina_detect": true
+    });
 
 </script>
 </body>
