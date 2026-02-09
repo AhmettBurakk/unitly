@@ -303,6 +303,7 @@
                 </button>
                 <div id="thermoDropdown" class="dropdown-content">
                     <a onclick="openModal('rankineModal')">🏭 Rankine Cycle <span class="lab-badge hot">GRAPH</span></a>
+                    <a onclick="openModal('reynoldsModal')">🌊 Reynolds & Flow <span class="lab-badge new">VISUAL</span></a>
                     <a onclick="openModal('thermModal')">📏 Thermal Expansion</a>
                     <a onclick="openModal('gasModal')">🎈 Ideal Gas Law</a>
                     <a onclick="openModal('heatModal')">❄️ Heat Transfer (Q)</a>
@@ -317,6 +318,9 @@
                 <div id="mechDropdown" class="dropdown-content">
                     <a onclick="openModal('threeModal')">🧊 3D Studio <span class="lab-badge hot">FIXED</span></a>
                     <a onclick="openModal('sketchModal')">🎨 Sketch 2D <span class="lab-badge hot">TOUCH</span></a>
+                    <a onclick="openModal('bearingModal')">⭕ Bearing Life <span class="lab-badge new">L10</span></a>
+                    <a onclick="openModal('mohrModal')">🔵 Mohr's Circle <span class="lab-badge new">STRESS</span></a>
+                    <a onclick="openModal('vibrationModal')">〰️ Spring-Mass-Damper</a>
                     <a onclick="openModal('robotModal')">🤖 Robot Kinematics</a>
                     <a onclick="openModal('gearDesignModal')">⚙️ Gear Module / Dim. <span class="lab-badge new">3D</span></a>
                     <a onclick="openModal('latheModal')">🛑 Lathe / Turning <span class="lab-badge new">3D</span></a>
@@ -372,7 +376,7 @@
         
         <div style="margin-top:auto; font-size:0.75rem; color:var(--text-muted); padding-top:20px; border-top:1px solid var(--border);">
             System Status: <span style="color:#10b981">● Online</span><br>
-            Ver: 2.4.0 (Thermo Added)
+            Ver: 2.5.0 (Machine Design Added)
         </div>
     </nav>
 
@@ -381,7 +385,7 @@
             
             <div class="search-hero">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="globalSearch" placeholder="Search tools, formulas, or calculators (e.g. 'Gear', 'Stress')..." onkeyup="filterTools()">
+                <input type="text" id="globalSearch" placeholder="Search tools, formulas, or calculators (e.g. 'Bearing', 'Reynolds')..." onkeyup="filterTools()">
             </div>
             
             <div id="dynamicSearchResults" class="search-results-panel"></div>
@@ -422,6 +426,121 @@
         </div>
     </div>
 
+    <div id="reynoldsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('reynoldsModal')">&times;</span>
+            <h3 style="color:#3b82f6">🌊 Reynolds Number (Fluid Dynamics)</h3>
+            <div class="modal-grid">
+                <div class="input-group">
+                    <span class="unit-tag">Parameters</span>
+                    <div class="row">
+                        <div style="flex:1"><small>Velocity (m/s)</small><input type="number" id="reyV" value="2" oninput="calcReynolds()"></div>
+                        <div style="flex:1"><small>Diameter (mm)</small><input type="number" id="reyD" value="50" oninput="calcReynolds()"></div>
+                    </div>
+                    <small>Fluid Kinematic Viscosity (m²/s)</small>
+                    <select id="reyNu" onchange="calcReynolds()">
+                        <option value="0.000001">Water (1.0e-6)</option>
+                        <option value="0.000015">Air (1.5e-5)</option>
+                        <option value="0.0001">Oil (1.0e-4)</option>
+                    </select>
+                    
+                    <div class="result-box" style="margin-top:20px;">
+                        <div class="result-val" id="reyRes">0</div>
+                        <small>Reynolds Number (Re)</small>
+                        <hr>
+                        <div id="flowLabel" style="font-weight:bold; font-size:1.2rem; margin-top:10px;">--</div>
+                    </div>
+                </div>
+                <div class="sim-container" style="background:#0f172a; height:300px;">
+                    <canvas id="reyCanvas" width="500" height="300" style="width:100%; height:100%;"></canvas>
+                    <div style="position:absolute; top:10px; right:10px; color:#aaa; font-size:0.8rem;">Visual Simulation</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="bearingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bearingModal')">&times;</span>
+            <h3 style="color:#f59e0b">⭕ Bearing Life Calculator (L10)</h3>
+            <div class="modal-grid">
+                <div class="input-group">
+                    <span class="unit-tag">Load Data</span>
+                    <div class="row">
+                        <div style="flex:1"><small>Dynamic C (kN)</small><input type="number" id="bearC" value="14"></div>
+                        <div style="flex:1"><small>Equiv Load P (kN)</small><input type="number" id="bearP" value="2"></div>
+                    </div>
+                    <div class="row">
+                        <div style="flex:1"><small>Speed (RPM)</small><input type="number" id="bearRPM" value="1500"></div>
+                        <div style="flex:1"><small>Type</small><select id="bearType"><option value="3">Ball (k=3)</option><option value="3.33">Roller (k=10/3)</option></select></div>
+                    </div>
+                    <button onclick="calcBearing()">Calculate Life</button>
+                </div>
+                <div class="result-box">
+                    <div class="res-item highlight"><small>L10 Life (Hours)</small><span id="resL10h">0 Hours</span></div>
+                    <div class="res-item"><small>L10 (Revolutions)</small><span id="resL10">0 M.Rev</span></div>
+                    <hr>
+                    <div class="res-item"><small>Reliability</small><span style="color:#34d399">90%</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="vibrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('vibrationModal')">&times;</span>
+            <h3 style="color:#ef4444">〰️ Spring-Mass-Damper (Vibration)</h3>
+            <div class="modal-grid">
+                <div class="input-group">
+                    <span class="unit-tag">System Properties</span>
+                    <div class="row">
+                        <div style="flex:1"><small>Mass (kg)</small><input type="number" id="vibM" value="5" oninput="initVibration()"></div>
+                        <div style="flex:1"><small>Spring K (N/m)</small><input type="number" id="vibK" value="200" oninput="initVibration()"></div>
+                    </div>
+                    <small>Damping C (Ns/m)</small><input type="number" id="vibC" value="5" oninput="initVibration()">
+                    
+                    <button onclick="initVibration()" style="margin-top:20px;">Reset Simulation</button>
+                    
+                    <div class="result-box" style="text-align:left;">
+                        <div class="res-item"><small>Natural Freq (ωn)</small><span id="resWn">0 rad/s</span></div>
+                        <div class="res-item"><small>Damping Ratio (ζ)</small><span id="resZeta">0</span></div>
+                    </div>
+                </div>
+                <div class="sim-container" style="background:#1e293b; height:350px;">
+                    <canvas id="vibCanvas" width="500" height="350" style="width:100%; height:100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mohrModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('mohrModal')">&times;</span>
+            <h3 style="color:#3b82f6">🔵 Mohr's Circle (Stress)</h3>
+            <div class="modal-grid">
+                <div class="input-group">
+                    <span class="unit-tag">Stress State (MPa)</span>
+                    <div class="row">
+                        <div style="flex:1"><small>Sigma X</small><input type="number" id="mohrSx" value="50" oninput="calcMohr()"></div>
+                        <div style="flex:1"><small>Sigma Y</small><input type="number" id="mohrSy" value="-10" oninput="calcMohr()"></div>
+                    </div>
+                    <small>Tau XY (Shear)</small><input type="number" id="mohrTxy" value="40" oninput="calcMohr()">
+                    <button onclick="calcMohr()">Plot Circle</button>
+                    
+                    <div class="result-box" style="text-align:left;">
+                        <div class="res-item highlight"><small>Max Principal (σ1)</small><span id="resS1">0</span></div>
+                        <div class="res-item"><small>Min Principal (σ2)</small><span id="resS2">0</span></div>
+                        <div class="res-item"><small>Max Shear (τmax)</small><span id="resTmax">0</span></div>
+                        <div class="res-item"><small>Angle (θp)</small><span id="resAngle">0°</span></div>
+                    </div>
+                </div>
+                <div class="sim-container" style="background:#0f172a; height:400px;">
+                    <canvas id="mohrCanvas" width="500" height="400" style="width:100%; height:100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="rankineModal" class="modal">
         <div class="modal-content" style="max-width: 1100px;">
             <span class="close" onclick="closeModal('rankineModal')">&times;</span>
@@ -456,12 +575,12 @@
                 </div>
 
                 <div class="viewer-container" style="background:#0f172a; height: 550px; border-color:var(--border);">
-                     <canvas id="rankineCanvas" width="700" height="550" style="width:100%; height:100%;"></canvas>
-                     <div style="position:absolute; top:10px; right:10px; text-align:right;">
-                         <div style="color:#fff; font-size:0.8rem;">⚪ Saturation Line</div>
-                         <div style="color:#f43f5e; font-size:0.8rem;">🔴 Ideal Cycle</div>
-                         <div style="color:#10b981; font-size:0.8rem;">🟢 Actual Process</div>
-                     </div>
+                      <canvas id="rankineCanvas" width="700" height="550" style="width:100%; height:100%;"></canvas>
+                      <div style="position:absolute; top:10px; right:10px; text-align:right;">
+                          <div style="color:#fff; font-size:0.8rem;">⚪ Saturation Line</div>
+                          <div style="color:#f43f5e; font-size:0.8rem;">🔴 Ideal Cycle</div>
+                          <div style="color:#10b981; font-size:0.8rem;">🟢 Actual Process</div>
+                      </div>
                 </div>
             </div>
             <p style="font-size:0.8rem; color:#94a3b8; margin-top:10px;">*Note: This simulation uses simplified state approximations for educational visualization. It does not replace exact IAPWS-IF97 steam tables.</p>
@@ -1225,7 +1344,12 @@
         }
         if(id === 'beamModal') calcBeamPro();
         if(id === 'resistorModal') calcResistor(); 
-        if(id === 'rankineModal') calcRankine(); // Trigger Thermo
+        if(id === 'rankineModal') calcRankine(); 
+        // NEW TOOLS
+        if(id === 'reynoldsModal') setTimeout(calcReynolds, 100);
+        if(id === 'bearingModal') calcBearing();
+        if(id === 'vibrationModal') initVibration();
+        if(id === 'mohrModal') calcMohr();
     }
 
     function closeModal(id) { 
@@ -1235,6 +1359,9 @@
             cancelAnimationFrame(animationId);
             animationId = null;
         }
+        // Stop specific animations
+        if(id === 'reynoldsModal' && reyAnimId) cancelAnimationFrame(reyAnimId);
+        if(id === 'vibrationModal' && vibAnimId) cancelAnimationFrame(vibAnimId);
     }
 
     // --- SEARCH FUNCTIONS (INTERNAL) ---
@@ -2160,6 +2287,265 @@
     }
     function toggleWireframe(){ 
         scene.children.forEach(c => { if(c.type==='Mesh' && c.material) c.material.wireframe = !c.material.wireframe; });
+    }
+
+    // --- NEW LOGIC: REYNOLDS, BEARING, VIB, MOHR ---
+
+    // 1. REYNOLDS VISUALIZER
+    let reyAnimId = null;
+    let flowParticles = [];
+
+    function calcReynolds() {
+        const v = safeFloat('reyV');
+        const d = safeFloat('reyD') / 1000; // mm to m
+        const nu = parseFloat(document.getElementById('reyNu').value);
+
+        if(d <= 0 || nu <= 0) return;
+
+        const Re = (v * d) / nu;
+        
+        document.getElementById('reyRes').innerText = Re.toLocaleString(undefined, {maximumFractionDigits: 0});
+        const label = document.getElementById('flowLabel');
+
+        let color = "";
+        if (Re < 2300) {
+            label.innerText = "LAMINAR FLOW";
+            color = "#10b981"; 
+        } else if (Re >= 2300 && Re < 4000) {
+            label.innerText = "TRANSITION";
+            color = "#f59e0b";
+        } else {
+            label.innerText = "TURBULENT FLOW";
+            color = "#ef4444";
+        }
+        label.style.color = color;
+
+        // Init/Update Visuals
+        const cvs = document.getElementById('reyCanvas');
+        if(!cvs) return;
+        
+        // Reset or init particles
+        if(flowParticles.length === 0) {
+            for(let i=0; i<100; i++) {
+                flowParticles.push({
+                    x: Math.random() * cvs.width,
+                    y: Math.random() * cvs.height,
+                    vx: 0, vy: 0,
+                    offset: Math.random() * 10
+                });
+            }
+            animateReynolds();
+        }
+
+        // Update particle physics based on Re
+        flowParticles.forEach(p => {
+            p.Re = Re;
+            p.vBase = v * 2; // scale for visual
+            if(p.vBase > 15) p.vBase = 15; // cap speed
+        });
+    }
+
+    function animateReynolds() {
+        reyAnimId = requestAnimationFrame(animateReynolds);
+        const cvs = document.getElementById('reyCanvas');
+        const ctx = cvs.getContext('2d');
+        
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.2)'; // Trail effect
+        ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+        flowParticles.forEach(p => {
+            // Logic
+            p.x += p.vBase;
+            
+            if(p.Re > 4000) {
+                // Turbulent: chaotic Y
+                p.y += (Math.random() - 0.5) * (p.Re / 500); 
+            } else if (p.Re > 2300) {
+                // Transition: wavy
+                p.y += Math.sin(p.x * 0.05) * 1;
+            } else {
+                // Laminar: Straight
+                // p.y constant
+            }
+
+            // Wrap
+            if(p.x > cvs.width) p.x = 0;
+            if(p.y > cvs.height) p.y = cvs.height;
+            if(p.y < 0) p.y = 0;
+
+            // Draw
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
+            if(p.Re < 2300) ctx.fillStyle = "#10b981";
+            else if(p.Re < 4000) ctx.fillStyle = "#f59e0b";
+            else ctx.fillStyle = "#ef4444";
+            ctx.fill();
+        });
+    }
+
+    // 2. BEARING CALCULATOR
+    function calcBearing() {
+        const C = safeFloat('bearC') * 1000; // N
+        const P = safeFloat('bearP') * 1000; // N
+        const n = safeFloat('bearRPM');
+        const k = parseFloat(document.getElementById('bearType').value);
+
+        if(P <= 0 || n <= 0) return;
+
+        // L10 (Millions of Revs) = (C/P)^k
+        const L10_mr = Math.pow((C/P), k);
+        // L10h (Hours) = (10^6 / (60 * n)) * L10_mr
+        const L10h = (1000000 / (60 * n)) * L10_mr;
+
+        document.getElementById('resL10').innerText = L10_mr.toFixed(2) + " M.Rev";
+        document.getElementById('resL10h').innerText = Math.round(L10h).toLocaleString() + " Hours";
+    }
+
+    // 3. SPRING-MASS (VIBRATION)
+    let vibAnimId = null;
+    let vibState = { y: 0, v: 0, t: 0 }; // relative position from equilibrium
+
+    function initVibration() {
+        const m = safeFloat('vibM');
+        const k = safeFloat('vibK');
+        const c_damp = safeFloat('vibC');
+        
+        if(m <= 0) return;
+
+        // Calc natural freq
+        const wn = Math.sqrt(k/m);
+        const cc = 2 * Math.sqrt(k*m); // critical damping
+        const zeta = c_damp / cc;
+
+        document.getElementById('resWn').innerText = wn.toFixed(2) + " rad/s";
+        document.getElementById('resZeta').innerText = zeta.toFixed(3) + (zeta>1?" (Over)":zeta<1?" (Under)":" (Crit)");
+
+        // Reset Physics
+        vibState = { y: 100, v: 0, t: 0 }; // Start pulled down 100px
+        
+        if(!vibAnimId) animateVibration();
+    }
+
+    function animateVibration() {
+        vibAnimId = requestAnimationFrame(animateVibration);
+        const cvs = document.getElementById('vibCanvas');
+        const ctx = cvs.getContext('2d');
+        const width = cvs.width;
+        const height = cvs.height;
+        const centerX = width/2;
+        const eqY = 150; // Equilibrium Y position
+
+        const m = safeFloat('vibM');
+        const k = safeFloat('vibK');
+        const c = safeFloat('vibC');
+        const dt = 0.05; // Time step
+
+        // Physics Integration (Semi-Implicit Euler)
+        const a = (-k * vibState.y - c * vibState.v) / m;
+        vibState.v += a * dt;
+        vibState.y += vibState.v * dt;
+
+        // Draw
+        ctx.clearRect(0, 0, width, height);
+        
+        // Ceiling
+        ctx.fillStyle = "#94a3b8";
+        ctx.fillRect(centerX-50, 0, 100, 10);
+
+        // Spring (Zigzag)
+        const boxY = eqY + vibState.y;
+        ctx.beginPath();
+        ctx.moveTo(centerX, 10);
+        const segments = 10;
+        const springLen = boxY - 10;
+        for(let i=0; i<=segments; i++) {
+            let x = centerX + (i%2===0 ? -10 : 10);
+            if(i===0 || i===segments) x = centerX;
+            let y = 10 + (springLen/segments)*i;
+            ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Mass Box
+        ctx.fillStyle = "#3b82f6";
+        ctx.fillRect(centerX-25, boxY, 50, 50); // Box size 50
+        
+        // Damper (Visual only)
+        ctx.beginPath();
+        ctx.moveTo(centerX + 40, 10);
+        ctx.lineTo(centerX + 40, 10 + springLen/2);
+        ctx.stroke();
+        ctx.fillStyle = "#ef4444";
+        ctx.fillRect(centerX+30, 10 + springLen/2, 20, 20); // Piston
+    }
+
+    // 4. MOHR'S CIRCLE
+    function calcMohr() {
+        const sx = safeFloat('mohrSx');
+        const sy = safeFloat('mohrSy');
+        const txy = safeFloat('mohrTxy');
+
+        const center = (sx + sy) / 2;
+        const radius = Math.sqrt(Math.pow((sx - sy)/2, 2) + Math.pow(txy, 2));
+        
+        const s1 = center + radius;
+        const s2 = center - radius;
+        const tmax = radius;
+        const angle2p = Math.atan2(2*txy, (sx-sy)) * (180/Math.PI); // Degrees 2theta
+
+        document.getElementById('resS1').innerText = s1.toFixed(1) + " MPa";
+        document.getElementById('resS2').innerText = s2.toFixed(1) + " MPa";
+        document.getElementById('resTmax').innerText = tmax.toFixed(1) + " MPa";
+        document.getElementById('resAngle').innerText = (angle2p/2).toFixed(1) + "°";
+
+        // Draw
+        const cvs = document.getElementById('mohrCanvas');
+        const ctx = cvs.getContext('2d');
+        const w = cvs.width, h = cvs.height;
+        ctx.clearRect(0,0,w,h);
+
+        // Auto Scale
+        const maxVal = Math.max(Math.abs(s1), Math.abs(s2), Math.abs(tmax)) * 1.2;
+        const scale = (h/2) / maxVal; // px per MPa
+        
+        const cx = w/2; 
+        const cy = h/2;
+
+        // Grid
+        ctx.strokeStyle = "#334155";
+        ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke(); // X axis (Sigma)
+        ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke(); // Y axis (Tau)
+
+        // Circle
+        const plotC = cx + center * scale;
+        const plotR = radius * scale;
+        
+        ctx.beginPath();
+        ctx.arc(plotC, cy, plotR, 0, Math.PI*2);
+        ctx.strokeStyle = "#3b82f6";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // State Points
+        // Point X (sx, -txy) - Mohr convention txy down is CW
+        const px_x = cx + sx * scale;
+        const px_y = cy + txy * scale; // Canvas Y is inverted relative to normal math, works out
+        
+        const py_x = cx + sy * scale;
+        const py_y = cy - txy * scale;
+
+        ctx.beginPath(); ctx.moveTo(px_x, px_y); ctx.lineTo(py_x, py_y); 
+        ctx.strokeStyle = "#94a3b8"; ctx.setLineDash([5,5]); ctx.stroke(); ctx.setLineDash([]);
+
+        // Labels
+        ctx.fillStyle = "#ef4444";
+        ctx.fillText("σ1", cx + s1*scale, cy-5);
+        ctx.fillText("σ2", cx + s2*scale, cy-5);
+        
+        ctx.fillStyle = "#10b981";
+        ctx.beginPath(); ctx.arc(px_x, px_y, 4, 0, Math.PI*2); ctx.fill(); // X face
     }
 
     // --- PARTICLES INIT ---
